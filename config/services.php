@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'xsolla' => [
+        'merchant_id' => env('XSOLLA_MERCHANT_ID'),
+        'project_id' => env('XSOLLA_PROJECT_ID'),
+        'api_url' => env('XSOLLA_API_URL'),
+        'api_key' => env('XSOLLA_API_KEY'),
+        'api_subs_url' => env('XSOLLA_API_SUBS_URL'),
+    ],
+
 ];

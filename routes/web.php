@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,5 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans.index');
+Route::get('/plans/redirect', [SubscriptionController::class, 'redirect'])->name('plans.redirect');
+
+Route::get('/articles', function () {
+    return Inertia::render('Articles/Index');
+})->name('articles.index');
 
 require __DIR__.'/auth.php';
