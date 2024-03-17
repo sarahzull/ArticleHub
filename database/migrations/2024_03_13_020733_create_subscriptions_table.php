@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id('subscription_id');
+            $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('plan_id');
-            $table->foreign('plan_id')->references('plan_id')->on('subscription_plans');
+            $table->unsignedBigInteger('subscription_plan_id');
+            $table->foreign('subscription_plan_id')->references('id')->on('subscription_plans');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
             $table->enum('status', ['Active', 'Cancelled', 'Expired']);
