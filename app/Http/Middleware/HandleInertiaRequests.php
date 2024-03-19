@@ -29,10 +29,23 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        if ($user) {
+            if ($user->subscription) {
+                $userWithSubscription = $user->load('subscription.plan');
+                $currentPlan = optional($userWithSubscription->subscription->plan)->name ?? 'Free';
+            } else {
+                $currentPlan = 'Free';
+            }
+        } else {
+            $currentPlan = 'Free';
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
+                'currentPlan' => $currentPlan,
             ],
         ];
     }

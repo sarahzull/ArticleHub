@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\XsollaService;
@@ -134,6 +135,15 @@ class TestController extends Controller
 
         $response = Http::withBasicAuth($merchantId, $apiKey)
                         ->get($url, $params);
+
+        // foreach ($response->json() as $plan) {
+        //     SubscriptionPlan::create([
+        //         'plan_id' => $plan['id'],
+        //         'name' => $plan['name']['en'],
+        //         'description' => $plan['description']['en'],
+        //         'price' => $plan['charge']['prices'][0]['amount'],
+        //     ]);
+        // }
 
         if ($response->successful()) {
             $data = $response->json();
