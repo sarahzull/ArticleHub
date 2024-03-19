@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\XsollaService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +19,21 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = auth()->user()->load('subscription.plan');
+        
+        if ($user->subscription) {
+            $userPlan = $user->subscription;
+        } else {
+            $userPlan = null;
+        }
+
+        $plans = XsollaService::getPlans(null);
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'userPlan' => $userPlan,
+            'plans' => $plans,
         ]);
     }
 
@@ -59,5 +72,9 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function updatePlan (Request $request) {
+        dd($request->all());
     }
 }

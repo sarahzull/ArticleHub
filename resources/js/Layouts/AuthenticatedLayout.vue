@@ -45,7 +45,25 @@ const showingNavigationDropdown = ref(false);
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <!-- Current Plan -->
                             <div class="flex items-center ms-4">
-                                <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Basic'">
+                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-amber-400 text-amber-700">
+                                        {{ $page.props.auth.currentPlan }}
+                                    </span>
+                                </div>
+
+                                <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Premium'">
+                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-400 text-rose-700">
+                                        {{ $page.props.auth.currentPlan }}
+                                    </span>
+                                </div>
+                                
+                                <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Pro'">
+                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-sky-300 text-sky-700">
+                                        {{ $page.props.auth.currentPlan }}
+                                    </span>
+                                </div>
+
+                                <span v-if="$page.props.auth.currentPlan === 'Free'" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-slate-300 text-slate-700">
                                     {{ $page.props.auth.currentPlan }}
                                 </span>
                             </div>

@@ -22,6 +22,11 @@ class SubscriptionUser extends Model
         'updated_at',
     ];
 
+    protected $appends = [
+        'start_date_formatted',
+        'end_date_formatted',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -30,5 +35,15 @@ class SubscriptionUser extends Model
     public function plan()
     {
         return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id', 'id');
+    }
+
+    public function getStartDateFormattedAttribute($value)
+    {
+        return $this->asDateTime($value)->format('d F Y');
+    }
+
+    public function getEndDateFormattedAttribute($value)
+    {
+        return $this->asDateTime($value)->format('d F Y');
     }
 }
