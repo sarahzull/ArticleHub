@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('subscription_plan_id');
             $table->foreign('subscription_plan_id')->references('id')->on('subscription_plans');
+            $table->string('invoice_id');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->enum('status', ['Active', 'Cancelled', 'Expired']);
+            $table->string('status');
             $table->timestamps();
         });
     }

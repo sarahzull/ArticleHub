@@ -10,7 +10,6 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'article_id',
         'author_id',
         'is_premium',
         'category_id',
@@ -24,4 +23,14 @@ class Article extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
