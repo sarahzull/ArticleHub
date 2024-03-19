@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 
 class XsollaService 
 {
-    public static function createUserToken($user, $plan_id)
+    public static function createUserToken($user, $plan)
     {
         $merchantId = Config::get('services.xsolla.merchant_id');
         $projectId = Config::get('services.xsolla.project_id');
@@ -30,11 +30,11 @@ class XsollaService
 
         $payload = [
             "purchase" => [
-                "checkout" => ["currency" => "MYR", "amount" => 10],
+                "checkout" => ["currency" => "MYR", "amount" => (float) $plan->price],
                 "subscription" => [
                     "gift" => [
-                        "recipient" => "test_recipient_v1",
-                        "email" => "recipient_email@email.com",
+                        "recipient" => $user->name,
+                        "email" => $user->email,
                     ],
                 ],
             ],
@@ -53,19 +53,25 @@ class XsollaService
                     ],
                     "size" => "medium",
                 ],
+                "return_url" => "http://127.0.0.1:8000/api/v1/subscription/callback",
+                "redirect_policy" => [
+                    "redirect_button_caption" => "Back to Site",
+                ],
             ],
             "user" => [
                 "country" => ["allow_modify" => true, "value" => "MY"],
                 "age" => 12,
-                "email" => ["value" => "samad@mail.com"],
-                "id" => ["value" => "1"],
-                "name" => ["value" => "Samad Ushuk"],
+                "email" => ["value" => $user->email],
+                "id" => ["value" => (string) $user->id],
+                "name" => ["value" => $user->name],
             ],
         ];
 
         $response = Http::withBasicAuth($merchantId, $apiKey)
                         ->withHeaders(['Content-Type' => 'application/json'])
                         ->post($url, $payload);
+
+        // dd($response->json());
 
         return $response->json();
     }

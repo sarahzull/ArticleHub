@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('createToken', [TestController::class, 'createToken']);
 Route::get('getSubscriptions', [TestController::class, 'getSubscriptions']);
 Route::get('getPlans', [TestController::class, 'getPlans']);
+
+Route::get('v1/subscription/callback', [SubscriptionController::class, 'callback'])->name('subscription.callback');
