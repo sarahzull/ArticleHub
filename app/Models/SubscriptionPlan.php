@@ -11,6 +11,7 @@ class SubscriptionPlan extends Model
 
     protected $fillable = [
         'plan_id',
+        'external_id',
         'name',
         'description',
         'price',
