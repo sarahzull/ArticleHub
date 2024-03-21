@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\SubscriptionPlan;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 
@@ -11,7 +15,7 @@ class XsollaService
     {
         $merchantId = Config::get('services.xsolla.merchant_id');
         $projectId = Config::get('services.xsolla.project_id');
-        $apiKey = Config::get('services.xsolla.api_key');
+        $apiMerchantKey = Config::get('services.xsolla.api_key');
         $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/token";
 
       // $payload = [
@@ -32,10 +36,7 @@ class XsollaService
             "purchase" => [
                 "checkout" => ["currency" => "MYR", "amount" => (float) $plan->price],
                 "subscription" => [
-                    "gift" => [
-                        "recipient" => $user->name,
-                        "email" => $user->email,
-                    ],
+                    "plan_id" => $plan->external_id,
                 ],
             ],
             "settings" => [
@@ -67,11 +68,77 @@ class XsollaService
             ],
         ];
 
-        $response = Http::withBasicAuth($merchantId, $apiKey)
+        $response = Http::withBasicAuth($merchantId, $apiMerchantKey)
                         ->withHeaders(['Content-Type' => 'application/json'])
                         ->post($url, $payload);
 
-        // dd($response->json());
+        return $response->json();
+    }
+
+    public static function getPlans ($limit) 
+    {
+        $merchantId = Config::get('services.xsolla.merchant_id');
+        $projectId = Config::get('services.xsolla.project_id');
+        $apiKey = Config::get('services.xsolla.api_key');
+        $url = Config::get('services.xsolla.api_url') . "projects/" . $projectId . "/subscriptions/plans";
+
+        $params = [
+            'limit' => $limit ?? 10
+        ];
+
+        $response = Http::withBasicAuth($merchantId, $apiKey)
+                        ->get($url, $params);
+
+        return $response->json();
+    }
+
+    public static function cancelSubscription ($user_id, $subscription_id)
+    {
+        //https://api.xsolla.com/merchant/v2/projects/{project_id}/users/{user_id}/subscriptions/{subscription_id}
+
+        $merchantId = Config::get('services.xsolla.merchant_id');
+        $projectId = (int) Config::get('services.xsolla.project_id');
+        $merchantApiKey = Config::get('services.xsolla.merchant_api_key');
+        $url = Config::get('services.xsolla.api_url') . "projects/" . $projectId . "/users/" . (string) $user_id . "/subscriptions/" . (int) $subscription_id;
+        
+        $payload = [
+            "user_id" => (string) $user_id,
+            "status" => "canceled",
+            // "cancel_subscription_payment" => true,
+        ];
+
+        $response = Http::withBasicAuth($merchantId, $merchantApiKey)
+                        ->withHeaders(['Content-Type' => 'application/json'])
+                        ->put($url, $payload);
+
+        $subscription = SubscriptionPlan::where('plan_id', $response['plan']['id'])->first();
+
+        $user = SubscriptionUser::where('user_id', $user_id)
+            ->where('subscription_plan_id', $subscription->id)
+            ->where('status', 'active')
+            ->update([
+            'status' => $response['status'],
+            'end_date' => Carbon::parse($response['date_end']),
+            'updated_at' => now(),
+        ]);
+
+        return $response->json();
+    }
+
+    public static function getSubscriptionByUserId($user_id)
+    {
+        $merchantId = Config::get('services.xsolla.merchant_id');
+        $merchantApiKey = Config::get('services.xsolla.merchant_api_key');
+        $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/subscriptions";
+
+        $params = [
+            'limit' => 1,
+            'user_id' => (string) $user_id,
+            // 'status[]' => 'active',
+        ];
+
+        $response = Http::withBasicAuth($merchantId, $merchantApiKey)
+                        ->get($url, $params);
 
         return $response->json();
     }
