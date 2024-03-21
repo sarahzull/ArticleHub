@@ -98,21 +98,38 @@ class TestController extends Controller
     public function getSubscriptions ()
     {
         $merchantId = Config::get('services.xsolla.merchant_id');
-        $apiKey = Config::get('services.xsolla.api_key');
+        $merchantApiKey = Config::get('services.xsolla.merchant_api_key');
         $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/subscriptions";
 
+        // dd($merchantId, $apiKey, $url);
+
+        // $params = [
+        //     'limit' => 10
+        // ];
+        
+        // $response = Http::withBasicAuth($merchantId, $apiKey)
+        //                 ->get($url, $params);
+
+        // dd($response->json());
+
+        // $url = 'https://api.xsolla.com/merchant/v2/merchants/' . $merchantId . '/subscriptions';
+
         $params = [
-            'limit' => 10
+            'limit' => 10,
+            // 'offset' => 0,
+            // 'user_id' => 'string',
+            // 'project_id[]' => 0,
+            // 'plan_id[]' => 0,
+            // 'product_id[]' => 0,
+            // 'group_id[]' => 'string',
+            // 'status[]' => 'active',
+            // 'datetime_from' => 'string',
+            // 'datetime_to' => 'string'
         ];
 
-        $user = User::find(2);
-        $test = XsollaService::createUserToken($user, 291703);
-
-        dd($test);
-        
-
-        $response = Http::withBasicAuth($merchantId, $apiKey)
-                        ->get($url, $params);
+        $response = Http::withBasicAuth($merchantId, $merchantApiKey)
+        ->withHeaders(['Content-Type' => 'application/json'])
+        ->get($url, $params);
 
         if ($response->successful()) {
             $data = $response->json();
@@ -120,6 +137,7 @@ class TestController extends Controller
         } else {
             return response()->json(['error' => 'Request failed.'], $response->status());
         }
+
     }
 
     public function getPlans ()

@@ -74,7 +74,26 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function updatePlan (Request $request) {
-        dd($request->all());
+    public function updatePlan (Request $request) 
+    {
+        //
+    }
+
+    public function cancelPlan (Request $request) 
+    {
+        $user_id = $request->user_id;
+        $subscription = XsollaService::getSubscriptionByUserId($user_id);
+        $subscription_id = $subscription[0]['id'];
+
+        $response = XsollaService::cancelSubscription($user_id, $subscription_id);
+
+        if ($response['status'] == 'canceled') {
+            session()->flash('success', 'Subscription has been canceled.');
+            return response()->json(['message' => 'Subscription canceled.']);
+        } else {
+            session()->flash('success', 'Request failed.');
+            return response()->json(['error' => 'Request failed.'], 500);
+        }
+        
     }
 }

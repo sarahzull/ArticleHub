@@ -52,7 +52,7 @@ const showingNavigationDropdown = ref(false);
                                 </div>
 
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Premium'">
-                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-400 text-rose-700">
+                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-300 text-rose-700">
                                         {{ $page.props.auth.currentPlan }}
                                     </span>
                                 </div>

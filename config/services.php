@@ -36,6 +36,7 @@ return [
         'project_id' => env('XSOLLA_PROJECT_ID'),
         'api_url' => env('XSOLLA_API_URL'),
         'api_key' => env('XSOLLA_API_KEY'),
+        'merchant_api_key' => env('XSOLLA_MERCHANT_API_KEY'),
         'api_subs_url' => env('XSOLLA_API_SUBS_URL'),
     ],
 
