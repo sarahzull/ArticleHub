@@ -12,7 +12,7 @@ class DashboardController extends Controller
     {
         $articles = Article::with('author', 'category')
             ->latest()
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         $user = auth()->user();

@@ -21,7 +21,7 @@ class ArticleSeeder extends Seeder
         $users = User::pluck('id')->toArray();
         $categories = Category::pluck('id')->toArray();
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 1; $i++) {
             Article::create([
                 'author_id' => $faker->randomElement($users),
                 'is_premium' => $faker->boolean(),

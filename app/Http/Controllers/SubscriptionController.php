@@ -86,8 +86,20 @@ class SubscriptionController extends Controller
         // $plan_external_id = $request->input('external_id');
         // $external_id = Str::random();
         $plan_id = $request->input('plan_id');
+        $user_id = auth()->user()->id;
 
-        $user = User::find(auth()->user()->id);
+        $subscription = XsollaService::getSubscriptionByUserId($user_id);
+        $subscription_id = $subscription[0]['id'];
+
+        $userSub = SubscriptionUser::where('user_id', auth()->user()->id)
+                                    ->where('status', 'active')
+                                    ->first();
+
+        if ($userSub) {
+            $cancellation = XsollaService::cancelSubscription($user_id, $subscription_id, 'canceled');
+        }
+
+        $user = User::find($user_id);
         $plan = SubscriptionPlan::where('plan_id', $plan_id)->first();
         $token = XsollaService::createUserToken($user, $plan);
 

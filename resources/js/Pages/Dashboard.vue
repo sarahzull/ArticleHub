@@ -48,7 +48,12 @@ if (flash.success) {
                     <div class="p-6 text-gray-900">
                         <div v-for="article in articles" :key="article.id" class="mb-8">
                             <div class="mb-2">
-                                <h3 class="text-2xl font-bold">{{ article.title }}</h3> by 
+                                <h3 class="text-2xl font-bold">
+                                {{ article.title }} 
+                                <span class="mx-2">•</span> 
+                                <span class="text-base font-light">{{ article.published_at_date }}</span>
+                                </h3> 
+                                by 
                                 <span class="text-gray-500">{{ article.author.name }}</span>
                             </div>
                             <div v-html="article.content" class="text-gray-700"></div>

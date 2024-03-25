@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Article extends Model
 {
@@ -25,9 +26,13 @@ class Article extends Model
     ];
 
     protected $casts = [
-        'published_at' => 'datetime:Y-m-d',
+        'published_at' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
+    protected $appends = [
+        'published_at_date',
     ];
 
     public function author()
@@ -38,5 +43,18 @@ class Article extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getPublishedAtDateAttribute()
+    {
+        $publishedAt = Carbon::parse($this->published_at);
+        $now = Carbon::now();
+        $diffInHours = $publishedAt->diffInHours($now);
+
+        if ($diffInHours < 24) {
+            return $publishedAt->diffInHours($now) . ' hours ago';
+        } else {
+            return $publishedAt->format('d F Y');
+        }
     }
 }
