@@ -9,7 +9,7 @@ class SubscriptionUser extends Model
 {
     use HasFactory;
 
-    protected $table = 'subscriptions';
+    protected $table = 'subscription_users';
 
     protected $fillable = [
         'user_id',
@@ -27,6 +27,8 @@ class SubscriptionUser extends Model
         'end_date_formatted',
     ];
 
+    protected $with = ['plan'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -37,13 +39,13 @@ class SubscriptionUser extends Model
         return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id', 'id');
     }
 
-    public function getStartDateFormattedAttribute($value)
+    public function getStartDateFormattedAttribute()
     {
-        return $this->asDateTime($value)->format('d F Y');
+        return $this->asDateTime($this->start_date)->format('d F Y');
     }
 
-    public function getEndDateFormattedAttribute($value)
+    public function getEndDateFormattedAttribute()
     {
-        return $this->asDateTime($value)->format('d F Y');
+        return $this->asDateTime($this->end_date)->format('d F Y');
     }
 }

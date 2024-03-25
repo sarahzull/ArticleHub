@@ -101,19 +101,6 @@ class TestController extends Controller
         $merchantApiKey = Config::get('services.xsolla.merchant_api_key');
         $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/subscriptions";
 
-        // dd($merchantId, $apiKey, $url);
-
-        // $params = [
-        //     'limit' => 10
-        // ];
-        
-        // $response = Http::withBasicAuth($merchantId, $apiKey)
-        //                 ->get($url, $params);
-
-        // dd($response->json());
-
-        // $url = 'https://api.xsolla.com/merchant/v2/merchants/' . $merchantId . '/subscriptions';
-
         $params = [
             'limit' => 10,
             // 'offset' => 0,

@@ -103,7 +103,7 @@ class XsollaService
         
         $payload = [
             "user_id" => (string) $user_id,
-            "status" => "canceled",
+            "status" => "non_renewing",
             // "cancel_subscription_payment" => true,
         ];
 
@@ -139,7 +139,7 @@ class XsollaService
 
         $response = Http::withBasicAuth($merchantId, $merchantApiKey)
                         ->get($url, $params);
-
+                        
         return $response->json();
     }
 }

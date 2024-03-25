@@ -44,8 +44,15 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = ['subscription'];
+
     public function subscription()
     {
         return $this->hasOne(SubscriptionUser::class)->where('status', 'active');
+    }
+
+    public function getSubscriptionAttribute()
+    {
+        return $this->subscription()->first();
     }
 }

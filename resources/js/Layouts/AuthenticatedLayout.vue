@@ -36,9 +36,9 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
 
-                                <NavLink :href="route('plans.index')" :active="route().current('plans.index')">
+                                <!-- <NavLink :href="route('plans.index')" :active="route().current('plans.index')">
                                     Plans
-                                </NavLink>
+                                </NavLink> -->
                             </div>
                         </div>
 
@@ -46,21 +46,21 @@ const showingNavigationDropdown = ref(false);
                             <!-- Current Plan -->
                             <div class="flex items-center ms-4">
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Basic'">
-                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-amber-400 text-amber-700">
+                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-amber-400 text-amber-700">
                                         {{ $page.props.auth.currentPlan }}
-                                    </span>
+                                    </a>
                                 </div>
 
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Premium'">
-                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-300 text-rose-700">
+                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-300 text-rose-700">
                                         {{ $page.props.auth.currentPlan }}
-                                    </span>
+                                    </a>
                                 </div>
                                 
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Pro'">
-                                    <span class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-sky-300 text-sky-700">
+                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-sky-300 text-sky-700">
                                         {{ $page.props.auth.currentPlan }}
-                                    </span>
+                                    </a>
                                 </div>
 
                                 <span v-if="$page.props.auth.currentPlan === 'Free'" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-slate-300 text-slate-700">

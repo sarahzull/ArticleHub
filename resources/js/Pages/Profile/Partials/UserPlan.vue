@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Swal from 'sweetalert2';
 
 const props = defineProps({
@@ -33,21 +33,22 @@ const form = useForm({
 // const showSubscriptionForm = ref(false);
 
 const page = usePage();
+const flash = page.props.flash;
 
-onMounted(() => {
-  // Assuming the session flash message is named 'message'
-  const message = page.props.value.flash.message;
-  const messageType = page.props.value.flash.type; // Example: 'success', 'error'
+if (flash.success) {
+  Swal.fire({
+    title: "Success!",
+    text: flash.success,
+    icon: "success"
+  });
+} else if (flash.error) {
+  Swal.fire({
+    title: "Error",
+    text: flash.error,
+    icon: "error"
+  });
+}
 
-  if (message) {
-    Swal.fire({
-      title: messageType === 'success' ? 'Success!' : 'Error!',
-      text: message,
-      icon: messageType,
-      confirmButtonText: 'OK'
-    });
-  }
-});
 </script>
 
 <template>

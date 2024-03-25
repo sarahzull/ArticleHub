@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { Link } from '@inertiajs/vue3';
 
 defineProps({ 
   plans: Object 
@@ -54,10 +55,27 @@ const redirectToPlan = (externalId, planId) => {
                 <span class="ml-3"><span class="text-black">Basic</span> features</span>
               </li>
             </ul>
-            <a href="#" @click.prevent="redirectToPlan(plans[0].external_id, plans[0].id)" class="flex items-center justify-center px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-xl">
+            <!-- <a href="#" 
+              @click.prevent="redirectToPlan(plans[0].external_id, plans[0].id)"
+              :disabled="$page.props.auth.currentPlan === plans[0].name.en"
+              class="flex items-center justify-center px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-xl">
               Choose Plan
               <img src="https://res.cloudinary.com/williamsondesign/arrow-right.svg" class="ml-2" />
-            </a>
+            </a> -->
+            <Link 
+                :href="route('plans.redirect', { external_id: plans[0].external_id, plan_id: plans[0].id })"
+                as="button"
+                :class="{
+                    'cursor-not-allowed bg-gray-400': $page.props.auth.currentPlan === plans[0].name.en,
+                    'bg-indigo-600': $page.props.auth.currentPlan !== plans[0].name.en
+                }"
+                class="w-full rounded-xl"
+            >
+                <div class="flex items-center justify-center px-4 py-5 text-xl text-center text-white rounded-xl">
+                    Choose Plan
+                    <img src="https://res.cloudinary.com/williamsondesign/arrow-right.svg" class="ml-2" />
+                </div>
+            </Link>
           </div>
           
           <div class="flex-1 order-1 w-full p-8 text-gray-400 bg-gray-900 shadow-xl rounded-3xl sm:w-96 lg:w-full lg:order-2 lg:mt-0">
@@ -90,10 +108,28 @@ const redirectToPlan = (externalId, planId) => {
                 <span class="ml-3"><span class="text-white">Personalized recommendations</span> tailored to your interests</span>
               </li>
             </ul>
-            <a href="#" @click.prevent="redirectToPlan(plans[1].external_id, plans[1].id)" class="flex items-center justify-center px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-xl">
+            <!-- <a 
+              href="#" 
+              @click.prevent="redirectToPlan(plans[1].external_id, plans[1].id)" 
+              :disabled="$page.props.auth.currentPlan === plans[1].name.en"
+              class="flex items-center justify-center px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-xl">
               Choose Plan
               <img src="https://res.cloudinary.com/williamsondesign/arrow-right.svg" class="ml-2" />
-            </a>
+            </a> -->
+            <Link 
+                :href="route('plans.redirect', { external_id: plans[1].external_id, plan_id: plans[1].id })"
+                as="button"
+                :class="{
+                    'cursor-not-allowed bg-gray-400': $page.props.auth.currentPlan === plans[1].name.en,
+                    'bg-indigo-600': $page.props.auth.currentPlan !== plans[1].name.en
+                }"
+                class="w-full rounded-xl"
+            >
+                <div class="flex items-center justify-center px-4 py-5 text-xl text-center text-white rounded-xl">
+                    Choose Plan
+                    <img src="https://res.cloudinary.com/williamsondesign/arrow-right.svg" class="ml-2" />
+                </div>
+            </Link>
           </div>
           
           <div class="flex-1 order-3 w-full p-8 mt-8 bg-white shadow-xl rounded-3xl sm:w-96 lg:w-full lg:order-3 lg:rounded-l-none">
@@ -126,10 +162,28 @@ const redirectToPlan = (externalId, planId) => {
                 <span class="ml-3"><span class="text-black">Exclusive</span> webinars or events</span>
               </li>
             </ul>
-            <a href="#" @click.prevent="redirectToPlan(plans[2].external_id, plans[2].id)" class="flex items-center justify-center px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-xl">
+            <!-- <a 
+              href="#" 
+              @click.prevent="redirectToPlan(plans[2].external_id, plans[2].id)" 
+              :disabled="$page.props.auth.currentPlan === plans[2].name.en"
+              class="flex items-center justify-center px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-xl">
               Choose Plan
               <img src="https://res.cloudinary.com/williamsondesign/arrow-right.svg" class="ml-2" />
-            </a>
+            </a> -->
+            <Link 
+                :href="route('plans.redirect', { external_id: plans[2].external_id, plan_id: plans[2].id })"
+                as="button"
+                :class="{
+                    'cursor-not-allowed bg-gray-400': $page.props.auth.currentPlan === plans[2].name.en,
+                    'bg-indigo-600': $page.props.auth.currentPlan !== plans[2].name.en
+                }"
+                class="w-full rounded-xl"
+            >
+                <div class="flex items-center justify-center px-4 py-5 text-xl text-center text-white rounded-xl">
+                    Choose Plan
+                    <img src="https://res.cloudinary.com/williamsondesign/arrow-right.svg" class="ml-2" />
+                </div>
+            </Link>
           </div>
         </div>
   </main>

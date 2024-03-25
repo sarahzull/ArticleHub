@@ -81,7 +81,7 @@ class ProfileController extends Controller
 
     public function cancelPlan (Request $request) 
     {
-        $user_id = $request->user_id;
+        $user_id = auth()->user()->id;
         $subscription = XsollaService::getSubscriptionByUserId($user_id);
         $subscription_id = $subscription[0]['id'];
 
@@ -91,7 +91,7 @@ class ProfileController extends Controller
             session()->flash('success', 'Subscription has been canceled.');
             return response()->json(['message' => 'Subscription canceled.']);
         } else {
-            session()->flash('success', 'Request failed.');
+            session()->flash('error', 'Request failed.');
             return response()->json(['error' => 'Request failed.'], 500);
         }
         
