@@ -24,6 +24,12 @@ class Article extends Model
         'updated_at',
     ];
 
+    protected $casts = [
+        'published_at' => 'datetime:Y-m-d',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');

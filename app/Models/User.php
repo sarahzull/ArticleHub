@@ -42,13 +42,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    protected $appends = ['subscription'];
+    protected $appends = [
+        'subscription'
+    ];
 
     public function subscription()
     {
-        return $this->hasOne(SubscriptionUser::class)->where('status', 'active');
+        return $this->hasOne(SubscriptionUser::class)->where('status', 'active')->orWhere('status', 'non_renewing');
     }
 
     public function getSubscriptionAttribute()

@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import CKEditor from '@ckeditor/ckeditor5-vue';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -28,6 +29,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(CKEditor)
             .component('font-awesome-icon', FontAwesomeIcon)
+            .component('pulse-loader', PulseLoader)
             .mount(el);
     },
     progress: {

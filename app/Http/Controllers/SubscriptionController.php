@@ -11,6 +11,7 @@ use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Redirect;
 
 class SubscriptionController extends Controller
 {
@@ -45,8 +46,6 @@ class SubscriptionController extends Controller
         $plan_id = $request->input('plan_id');
         $user_id = $request->input('user_id');
         // $external_id = Str::random();
-
-        dd(auth()->user()->id);
 
         $user = User::find($user_id);
 
@@ -100,9 +99,9 @@ class SubscriptionController extends Controller
             'status' => 'new',
         ]);
 
-        $redirect = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
+        $redirectUrl = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
         
-        return redirect($redirect);
+        return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
 
     public function callback (Request $request)

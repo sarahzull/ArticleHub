@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 
@@ -92,7 +93,7 @@ class XsollaService
         return $response->json();
     }
 
-    public static function cancelSubscription ($user_id, $subscription_id)
+    public static function cancelSubscription ($user_id, $subscription_id, $status)
     {
         //https://api.xsolla.com/merchant/v2/projects/{project_id}/users/{user_id}/subscriptions/{subscription_id}
 
@@ -100,10 +101,14 @@ class XsollaService
         $projectId = (int) Config::get('services.xsolla.project_id');
         $merchantApiKey = Config::get('services.xsolla.merchant_api_key');
         $url = Config::get('services.xsolla.api_url') . "projects/" . $projectId . "/users/" . (string) $user_id . "/subscriptions/" . (int) $subscription_id;
+
+        /**
+         * status: active, canceled, non_renewing
+         */
         
         $payload = [
             "user_id" => (string) $user_id,
-            "status" => "non_renewing",
+            "status" => $status,
             // "cancel_subscription_payment" => true,
         ];
 

@@ -63,9 +63,11 @@ const showingNavigationDropdown = ref(false);
                                     </a>
                                 </div>
 
-                                <span v-if="$page.props.auth.currentPlan === 'Free'" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-slate-300 text-slate-700">
-                                    {{ $page.props.auth.currentPlan }}
-                                </span>
+                                <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Free'">
+                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-slate-300 text-slate-700">
+                                        {{ $page.props.auth.currentPlan }}
+                                    </a>
+                                </div>
                             </div>
                             
                             <!-- Settings Dropdown -->

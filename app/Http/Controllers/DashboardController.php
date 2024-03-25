@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index () 
+    public function index (Request $request) 
     {
         $articles = Article::with('author', 'category')
             ->latest()
@@ -27,13 +27,24 @@ class DashboardController extends Controller
             $currentPlan = 'Free';
         }
 
+        if ($request->status === 'active') {
+            session()->flash('success', 'Your subscription has been activated!');
+        }
+
         return Inertia::render('Dashboard', [
             'articles' => $articles,
             'currentPlan' => $currentPlan
         ]);}
 
-    public function redirect () 
+    public function dashboardRedirect () 
     {
         return redirect()->route('dashboard');
+    }
+
+    public function redirect (Request $request) 
+    {
+        return Inertia::render('Redirect', [
+            'redirectUrl' => $request->input('redirectUrl')
+        ]);
     }
 }

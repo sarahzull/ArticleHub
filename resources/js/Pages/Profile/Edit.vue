@@ -5,8 +5,9 @@ import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import UserPlan from './Partials/UserPlan.vue';
 import ChangePlan from './Partials/ChangePlan.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import Swal from 'sweetalert2';
 
 defineProps({
     mustVerifyEmail: {
@@ -28,6 +29,23 @@ const showSubscriptionForm = ref(false);
 const toggleSubscriptionForm = () => {
     showSubscriptionForm.value = !showSubscriptionForm.value;
 };
+
+const page = usePage();
+const flash = page.props.flash;
+
+if (flash.success) {
+    Swal.fire({
+        title: "Success!",
+        text: flash.success,
+        icon: "success"
+    });
+} else if (flash.error) {
+    Swal.fire({
+        title: "Error",
+        text: flash.error,
+        icon: "error"
+    });
+}
 </script>
 
 <template>

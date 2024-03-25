@@ -29,9 +29,10 @@ use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'redirect'])->name('dashboard.redirect');
+    Route::get('/dashboard', [DashboardController::class, 'dashboardRedirect'])->name('dashboard.redirect');
 });
 
+Route::get('/redirect', [DashboardController::class, 'redirect'])->name('redirect');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

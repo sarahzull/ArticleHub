@@ -7,21 +7,21 @@ use App\Services\XsollaService;
 use Illuminate\Console\Command;
 use App\Models\SubscriptionUser;
 
-class UpdateSubscriptionStatus extends Command
+class SyncSubscriptionStatus extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'subscription:update-status';
+    protected $signature = 'subscription:sync-status';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update subscription status';
+    protected $description = 'Sync subscription status from Xsolla service';
 
     /**
      * Execute the console command.
@@ -39,8 +39,7 @@ class UpdateSubscriptionStatus extends Command
                     'status' => 'canceled'
                 ]);
             } else {
-                $lastChargeDate = Carbon::parse($response[0]['date_last_charge']);
-                $endDate = $lastChargeDate->addDays(30);
+                $endDate = Carbon::parse($response[0]['date_last_charge'])->addDays(30);
 
                 $subscription->update([
                     'status' => $response[0]['status'],
@@ -50,6 +49,6 @@ class UpdateSubscriptionStatus extends Command
             }
         }
 
-        $this->info('Subscription status updated successfully');
+        $this->info('Subscription status has been synced successfully.');
     }
 }

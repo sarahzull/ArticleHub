@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -85,15 +86,12 @@ class ProfileController extends Controller
         $subscription = XsollaService::getSubscriptionByUserId($user_id);
         $subscription_id = $subscription[0]['id'];
 
-        $response = XsollaService::cancelSubscription($user_id, $subscription_id);
+        $response = XsollaService::cancelSubscription($user_id, $subscription_id, 'canceled');
 
         if ($response['status'] == 'canceled') {
-            session()->flash('success', 'Subscription has been canceled.');
-            return response()->json(['message' => 'Subscription canceled.']);
+            return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
         } else {
-            session()->flash('error', 'Request failed.');
-            return response()->json(['error' => 'Request failed.'], 500);
+            return Redirect::route('profile.edit')->with('error', 'Request failed.');
         }
-        
     }
 }

@@ -1,11 +1,29 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 const props = defineProps({
     articles: Object,
     currentPlan: Object,
 });
+
+const page = usePage();
+const flash = page.props.flash;
+
+if (flash.success) {
+    Swal.fire({
+        title: "Success!",
+        text: flash.success,
+        icon: "success"
+    });
+} else if (flash.error) {
+    Swal.fire({
+        title: "Error",
+        text: flash.error,
+        icon: "error"
+    });
+}
 </script>
 
 <template>
