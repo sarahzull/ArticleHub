@@ -19,25 +19,12 @@ class XsollaService
         $apiMerchantKey = Config::get('services.xsolla.api_key');
         $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/token";
 
-      // $payload = [
-      //   "user" => [
-      //       "id" => ["value" => (string) $user->id, "hidden" => true],
-      //       "email" => ["value" => $user->email],
-      //       "name" => ["value" => $user->name, "hidden" => false],
-      //   ],
-      //   "settings" => [
-      //       "project_id" => (int) $projectId,
-      //       "payment_method" => 1380,
-      //       "currency" => "MYR",
-      //   ],
-      //   "purchase" => ["subscription" => ["plan_id" => (string) $plan_id]],
-      // ];
-
         $payload = [
             "purchase" => [
                 "checkout" => ["currency" => "MYR", "amount" => (float) $plan->price],
                 "subscription" => [
                     "plan_id" => $plan->external_id,
+                    "trial_days" => 0,
                 ],
             ],
             "settings" => [
@@ -62,7 +49,7 @@ class XsollaService
             ],
             "user" => [
                 "country" => ["allow_modify" => true, "value" => "MY"],
-                "age" => 12,
+                // "age" => 12,
                 "email" => ["value" => $user->email],
                 "id" => ["value" => (string) $user->id],
                 "name" => ["value" => $user->name],

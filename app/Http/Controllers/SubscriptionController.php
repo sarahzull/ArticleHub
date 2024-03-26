@@ -88,14 +88,13 @@ class SubscriptionController extends Controller
         $plan_id = $request->input('plan_id');
         $user_id = auth()->user()->id;
 
-        $subscription = XsollaService::getSubscriptionByUserId($user_id);
-        $subscription_id = $subscription[0]['id'];
-
         $userSub = SubscriptionUser::where('user_id', auth()->user()->id)
                                     ->where('status', 'active')
                                     ->first();
 
         if ($userSub) {
+            $subscription = XsollaService::getSubscriptionByUserId($user_id);
+            $subscription_id = $subscription[0]['id'];
             $cancellation = XsollaService::cancelSubscription($user_id, $subscription_id, 'canceled');
         }
 

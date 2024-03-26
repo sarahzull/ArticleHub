@@ -84,12 +84,12 @@ if (flash.success) {
             
             <div class="flex flex-row justify-between">
               <div class="font-medium text-stone-400">Price</div>
-              <div>${{ userPlan.plan.price }}</div>
+              <div>RM {{ userPlan.plan.price }}</div>
             </div>
 
             <div class="flex flex-row justify-between">
               <div class="font-medium text-stone-400">Next billing date</div>
-              <div>{{ userPlan.start_date_formatted }}</div>
+              <div>{{ userPlan.end_date_formatted }}</div>
             </div>
           </div>
 
