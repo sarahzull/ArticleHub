@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('author_id');
             $table->foreign('author_id')->references('id')->on('users');
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('category_id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamp('published_at')->nullable();
             $table->boolean('is_premium')->default(false);
             $table->timestamps();
