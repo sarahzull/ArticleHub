@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Config;
 
 class XsollaService 
 {
-    public static function createUserToken($user, $plan)
+    public static function createUserToken($user, $plan, $items)
     {
         $merchantId = Config::get('services.xsolla.merchant_id');
         $projectId = Config::get('services.xsolla.project_id');
         $apiMerchantKey = Config::get('services.xsolla.api_key');
         $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/token";
+        
 
         $payload = [
             "purchase" => [
@@ -49,12 +50,15 @@ class XsollaService
             ],
             "user" => [
                 "country" => ["allow_modify" => true, "value" => "MY"],
-                // "age" => 12,
                 "email" => ["value" => $user->email],
                 "id" => ["value" => (string) $user->id],
                 "name" => ["value" => $user->name],
             ],
         ];
+
+        if ($items != [] && $items['change_plan'] === true) {
+            $payload["purchase"]["subscription"]["operation"] = "change_plan";
+        }
 
         $response = Http::withBasicAuth($merchantId, $apiMerchantKey)
                         ->withHeaders(['Content-Type' => 'application/json'])
