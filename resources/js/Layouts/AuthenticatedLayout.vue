@@ -46,21 +46,21 @@ const showingNavigationDropdown = ref(false);
                             <!-- Current Plan -->
                             <div class="flex items-center ms-4">
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Basic'">
-                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-amber-400 text-amber-700">
+                                    <Link :href="route('profile.edit')" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-amber-400 text-amber-700">
                                         {{ $page.props.auth.currentPlan }}
-                                    </a>
+                                    </Link>
                                 </div>
 
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Premium'">
-                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-300 text-rose-700">
+                                    <Link :href="route('profile.edit')" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-rose-300 text-rose-700">
                                         {{ $page.props.auth.currentPlan }}
-                                    </a>
+                                    </Link>
                                 </div>
                                 
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Pro'">
-                                    <a href="/plans" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-sky-300 text-sky-700">
+                                    <Link :href="route('profile.edit')" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-sky-300 text-sky-700">
                                         {{ $page.props.auth.currentPlan }}
-                                    </a>
+                                    </Link>
                                 </div>
 
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Free'">
