@@ -18,7 +18,7 @@ class XsollaService
         $projectId = Config::get('services.xsolla.project_id');
         $apiMerchantKey = Config::get('services.xsolla.api_key');
         $url = Config::get('services.xsolla.api_url') . "merchants/" . $merchantId . "/token";
-        
+        $appUrl = Config::get('app.url');
 
         $payload = [
             "purchase" => [
@@ -43,7 +43,7 @@ class XsollaService
                     ],
                     "size" => "medium",
                 ],
-                "return_url" => "http://127.0.0.1:8000/api/v1/subscription/callback",
+                "return_url" => "$appUrl/api/v1/subscription/callback",
                 "redirect_policy" => [
                     "redirect_button_caption" => "Back to Site",
                 ],
