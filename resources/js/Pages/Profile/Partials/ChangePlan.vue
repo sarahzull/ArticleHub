@@ -6,6 +6,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import RadioInput from '@/Components/RadioInput.vue';
+import Swal from 'sweetalert2';
 
 const props = defineProps({
     userPlan: {
@@ -27,7 +28,29 @@ const form = useForm({
 });
 
 const submit = async () => {
-    
+    await Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to change the plan?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, change plan'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            changePlan();
+        }
+    });
+};
+
+const changePlan = async () => {
+    const selectedPlan = props.plans.find(plan => plan.id === parseInt(form.plan));
+    if (selectedPlan) {
+        const redirectUrl = `/plans/redirect?external_id=${selectedPlan.external_id}&plan_id=${selectedPlan.id}`;
+        window.location.href = redirectUrl;
+    } else {
+        console.error('No plan selected');
+    }
 };
 </script>
 
@@ -89,15 +112,6 @@ const submit = async () => {
                 >
                   Choose Plan
                 </button>
-                <!-- <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
-                </Transition> -->
               </div>
             </form>
         </div>
