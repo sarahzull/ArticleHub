@@ -27,14 +27,17 @@ class DashboardController extends Controller
             $currentPlan = 'Free';
         }
 
-        if ($request->status === 'active') {
+        if ($request->filled('status') && $request->status == 'active') {
             session()->flash('success', 'Your subscription has been activated!');
         }
+
+        session()->forget('success');
 
         return Inertia::render('Dashboard', [
             'articles' => $articles,
             'currentPlan' => $currentPlan
-        ]);}
+        ]);
+    }
 
     public function dashboardRedirect () 
     {

@@ -17,12 +17,14 @@ if (flash.success) {
         text: flash.success,
         icon: "success"
     });
+    page.props.flash.success = null;
 } else if (flash.error) {
     Swal.fire({
         title: "Error",
         text: flash.error,
         icon: "error"
     });
+    page.props.flash.success = null;
 }
 </script>
 
