@@ -56,6 +56,8 @@ class XsollaService
             ],
         ];
 
+        Log::info($payload);
+
         if ($items != [] && $items['change_plan'] === true) {
             $payload["purchase"]["subscription"]["operation"] = "change_plan";
         }
@@ -63,6 +65,8 @@ class XsollaService
         $response = Http::withBasicAuth($merchantId, $apiMerchantKey)
                         ->withHeaders(['Content-Type' => 'application/json'])
                         ->post($url, $payload);
+
+        Log::info($response->json());
 
         return $response->json();
     }
