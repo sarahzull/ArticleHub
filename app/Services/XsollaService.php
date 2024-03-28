@@ -31,7 +31,7 @@ class XsollaService
             "settings" => [
                 "currency" => "MYR",
                 "language" => "en",
-                "project_id" => $projectId,
+                "project_id" => (int) $projectId,
                 "mode" => "sandbox",
                 "ui" => [
                     "components" => ["virtual_currency" => ["custom_amount" => true]],
