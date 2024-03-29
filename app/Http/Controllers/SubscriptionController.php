@@ -103,7 +103,8 @@ class SubscriptionController extends Controller
         }
 
         $user = User::find($user_id);
-        $plan = SubscriptionPlan::where('plan_id', $plan_id)->first();
+        $plan = SubscriptionPlan::with('permission')->where('plan_id', $plan_id)->first();
+        $user->givePermissionTo($plan->permission->name);
     
         $token = XsollaService::createUserToken($user, $plan, $items);
 

@@ -51,6 +51,11 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'can' => [
+                'basic' => auth()->user()->can('basic plan'),
+                'premiun' => auth()->user()->can('premium plan'),
+                'pro' => auth()->user()->can('pro plan'),
+            ]
         ];
     }
 }

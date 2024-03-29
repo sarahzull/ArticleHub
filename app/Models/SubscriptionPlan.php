@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SubscriptionPlan extends Model
 {
@@ -17,5 +18,11 @@ class SubscriptionPlan extends Model
         'price',
         'created_at',
         'updated_at',
+        'permission_id'
     ];
+
+    public function permission()
+    {
+        return $this->belongsTo(Permission::class);
+    }
 }

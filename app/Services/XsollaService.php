@@ -111,7 +111,12 @@ class XsollaService
                         ->withHeaders(['Content-Type' => 'application/json'])
                         ->put($url, $payload);
 
-        $subscription = SubscriptionPlan::where('plan_id', $response['plan']['id'])->first();
+        $subscription = SubscriptionPlan::with('permission')->where('plan_id', $response['plan']['id'])->first();
+        
+        if ($status === 'canceled') {
+            $user = User::find($user_id);
+            $user->revokePermissionTo($subscription->permission->name);
+        }
 
         $user = SubscriptionUser::where('user_id', $user_id)
             ->where('subscription_plan_id', $subscription->id)

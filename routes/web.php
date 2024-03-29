@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('profile/plan', [ProfileController::class, 'updatePlan'])->name('profile.updatePlan');
     Route::patch('profile/cancelPlan', [ProfileController::class, 'cancelPlan'])->name('profile.cancelPlan');
+
+    Route::get('/personalized', [PlanController::class, 'index'])->name('personalized.index');
 });
 
 Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans.index');

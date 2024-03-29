@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
 use Inertia\Inertia;
+use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Models\SubscriptionPlan;
 
 class DashboardController extends Controller
 {
@@ -16,6 +17,7 @@ class DashboardController extends Controller
             ->get();
 
         $user = auth()->user();
+
         if ($user) {
             if ($user->subscription) {
                 $userWithSubscription = $user->load('subscription.plan');

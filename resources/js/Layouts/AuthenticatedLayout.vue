@@ -5,9 +5,15 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+
+const user = usePage().props.auth.user;
+
+const canAccessBasic = usePage().props.can.basic;
+const canAccessPremium = usePage().props.can.premium;
+const canAccessPro = usePage().props.can.pro;
 </script>
 
 <template>
@@ -36,9 +42,17 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
 
-                                <!-- <NavLink :href="route('plans.index')" :active="route().current('plans.index')">
-                                    Plans
-                                </NavLink> -->
+                                <NavLink v-if="canAccessBasic" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                    For Basic Plan
+                                </NavLink>
+
+                                <NavLink v-if="canAccessPremium" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                    For Premium Plan
+                                </NavLink>
+                                
+                                <NavLink v-if="canAccessPro" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                    For Pro Plan
+                                </NavLink>
                             </div>
                         </div>
 
