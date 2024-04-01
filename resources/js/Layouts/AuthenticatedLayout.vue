@@ -10,10 +10,12 @@ import { Link, usePage } from '@inertiajs/vue3';
 const showingNavigationDropdown = ref(false);
 
 const user = usePage().props.auth.user;
+const plan = usePage().props.can;
 
-const canAccessBasic = usePage().props.can.basic;
-const canAccessPremium = usePage().props.can.premium;
-const canAccessPro = usePage().props.can.pro;
+const canAccessBasic = usePage().props.can?.basic;
+const canAccessPremium = usePage().props.can?.premium;
+const canAccessPro = usePage().props.can?.pro;
+
 </script>
 
 <template>
@@ -42,15 +44,15 @@ const canAccessPro = usePage().props.can.pro;
                                     Dashboard
                                 </NavLink>
 
-                                <NavLink v-if="canAccessBasic" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                <NavLink v-if="$page.props.auth.currentPlan === 'Basic'" :href="route('personalized.index')" :active="route().current('personalized.index')">
                                     For Basic Plan
                                 </NavLink>
 
-                                <NavLink v-if="canAccessPremium" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                <NavLink v-if="$page.props.auth.currentPlan === 'Premium'" :href="route('personalized.index')" :active="route().current('personalized.index')">
                                     For Premium Plan
                                 </NavLink>
                                 
-                                <NavLink v-if="canAccessPro" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                <NavLink v-if="$page.props.auth.currentPlan === 'Pro'" :href="route('personalized.index')" :active="route().current('personalized.index')">
                                     For Pro Plan
                                 </NavLink>
                             </div>

@@ -40,7 +40,7 @@ const canAccessPro = usePage().props.can.pro;
             <h2 class="text-xl font-semibold leading-tight text-gray-800">Dashboard</h2>
         </template> -->
 
-        <div v-if="canAccessBasic" class="py-12">
+        <div v-if="$page.props.auth.currentPlan === 'Basic'" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">This page is for basic plan</div>
@@ -48,7 +48,7 @@ const canAccessPro = usePage().props.can.pro;
             </div>
         </div>
 
-        <div v-if="canAccessPremium" class="py-12">
+        <div v-if="$page.props.auth.currentPlan === 'Premium'" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">This page is for premium plan</div>
@@ -56,7 +56,7 @@ const canAccessPro = usePage().props.can.pro;
             </div>
         </div>
 
-        <div v-if="canAccessPro" class="py-12">
+        <div v-if="$page.props.auth.currentPlan === 'Pro'" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">This page is for pro plan</div>
