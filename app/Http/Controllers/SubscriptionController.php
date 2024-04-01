@@ -104,6 +104,9 @@ class SubscriptionController extends Controller
 
         $user = User::find($user_id);
         $plan = SubscriptionPlan::with('permission')->where('plan_id', $plan_id)->first();
+
+        $user->revokePermissionTo($plan->permission->name);
+        SubscriptionUser::where('user_id', $user_id)->update(['status' => 'canceled']);
     
         $token = XsollaService::createUserToken($user, $plan, $items);
 
@@ -126,8 +129,7 @@ class SubscriptionController extends Controller
                                 ->where('status', 'new')
                                 ->first();
         $user = User::find($request->input('user_id'));
-        $plan = SubscriptionPlan::with('permission')->where('id', $subs->id)->first();
-                                
+        $plan = SubscriptionPlan::with('permission')->where('id', $subs->plan->id)->first();
 
         if ($request->input('status') == 'done') {
             $subs->update([
