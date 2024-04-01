@@ -30,6 +30,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        
         if ($user) {
             if ($user->subscription) {
                 $userWithSubscription = $user->load('subscription.plan');
@@ -37,8 +38,17 @@ class HandleInertiaRequests extends Middleware
             } else {
                 $currentPlan = 'Free';
             }
+            
+            if ($user->getDirectPermissions()) {
+                $basicPlan = $user->hasDirectPermission('basic plan');
+                $premiumPlan = $user->hasDirectPermission('premium plan');
+                $proPlan = $user->hasDirectPermission('pro plan');
+            }
         } else {
             $currentPlan = 'Free';
+            $basicPlan = false;
+            $premiumPlan = false;
+            $proPlan = false;
         }
 
         return [
@@ -51,11 +61,11 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
-            // 'can' => [
-            //     'basic' => $user->can('basic plan') ?? false,
-            //     'premiun' => $user->can('premium plan') ?? false,
-            //     'pro' => $user->can('pro plan') ?? false,
-            // ]
+            'can' => [
+                'basic' => $basicPlan,
+                'premiun' => $premiumPlan,
+                'pro' => $proPlan,
+            ]
         ];
     }
 }

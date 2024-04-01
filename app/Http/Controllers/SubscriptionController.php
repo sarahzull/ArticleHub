@@ -104,7 +104,6 @@ class SubscriptionController extends Controller
 
         $user = User::find($user_id);
         $plan = SubscriptionPlan::with('permission')->where('plan_id', $plan_id)->first();
-        $user->givePermissionTo($plan->permission->name);
     
         $token = XsollaService::createUserToken($user, $plan, $items);
 
@@ -126,11 +125,17 @@ class SubscriptionController extends Controller
         $subs = SubscriptionUser::where('user_id', $request->input('user_id'))
                                 ->where('status', 'new')
                                 ->first();
+        $user = User::find($request->input('user_id'));
+        $plan = SubscriptionPlan::with('permission')->where('id', $subs->id)->first();
                                 
-        $subs->update([
-            'status' => 'active',
-            'invoice_id' => $request->input('invoice_id'),
-        ]);
+
+        if ($request->input('status') == 'done') {
+            $subs->update([
+                'status' => 'active',
+                'invoice_id' => $request->input('invoice_id'),
+            ]);
+            $user->givePermissionTo($plan->permission->name);
+        }
 
         return redirect()->route('dashboard', ['status' => $subs->status]);
     }

@@ -52,7 +52,10 @@ class User extends Authenticatable
 
     public function subscription()
     {
-        return $this->hasOne(SubscriptionUser::class)->where('status', 'active')->orWhere('status', 'non_renewing');
+        return $this->hasOne(SubscriptionUser::class, 'user_id')->where(function ($query) {
+            $query->where('status', 'active')
+                ->orWhere('status', 'non_renewing');
+        });
     }
 
     public function getSubscriptionAttribute()

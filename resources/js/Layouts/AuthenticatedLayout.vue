@@ -42,7 +42,7 @@ const canAccessPro = usePage().props.can.pro;
                                     Dashboard
                                 </NavLink>
 
-                                <!-- <NavLink v-if="canAccessBasic" :href="route('personalized.index')" :active="route().current('personalized.index')">
+                                <NavLink v-if="canAccessBasic" :href="route('personalized.index')" :active="route().current('personalized.index')">
                                     For Basic Plan
                                 </NavLink>
 
@@ -52,7 +52,7 @@ const canAccessPro = usePage().props.can.pro;
                                 
                                 <NavLink v-if="canAccessPro" :href="route('personalized.index')" :active="route().current('personalized.index')">
                                     For Pro Plan
-                                </NavLink> -->
+                                </NavLink>
                             </div>
                         </div>
 
