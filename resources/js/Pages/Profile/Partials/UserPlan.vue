@@ -49,6 +49,45 @@ if (flash.success) {
   });
 }
 
+const submitCancel = async () => {
+    await Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to cancel the plan?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, cancel plan'
+    }).then((result) => {
+        if (result.isConfirmed) {
+          cancelPlan();
+        }
+    });
+};
+
+const cancelPlan = async () => {
+  // form.post(route('profile.cancelPlan'));
+
+  form.post(route('profile.cancelPlan'), {
+    onSuccess: (data) => {
+        Swal.fire({
+            title: "Success!",
+            text: data.success || "Subscription has been canceled.",
+            icon: "success"
+        })
+        // .then(() => {
+        //     location.reload();
+        // });
+    },
+    onError: (error) => {
+        Swal.fire({
+            title: "Error",
+            text: error.response.data.error || "An error occurred. Please try again.",
+            icon: "error"
+        });
+    }
+  });
+};
 </script>
 
 <template>
@@ -112,7 +151,7 @@ if (flash.success) {
                   <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
               </Transition> -->
 
-            <form @submit.prevent="form.patch(route('profile.cancelPlan'))">
+            <form @submit.prevent="submitCancel" v-if="userPlan.status != 'non_renewing'">
               <input type="hidden" name="user_id" :value="user.id" />
               <button 
                   type="submit"

@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('profile/plan', [ProfileController::class, 'updatePlan'])->name('profile.updatePlan');
-    Route::patch('profile/cancelPlan', [ProfileController::class, 'cancelPlan'])->name('profile.cancelPlan');
+    Route::post('profile/cancelPlan', [ProfileController::class, 'cancelPlan'])->name('profile.cancelPlan');
 
     Route::get('/personalized', [PlanController::class, 'index'])->name('personalized.index');
 });
