@@ -52,4 +52,6 @@ Route::get('/articles', function () {
     return Inertia::render('Articles/Index');
 })->name('articles.index');
 
+Route::webhooks('webhook-url', 'xsolla-subscriptions');
+
 require __DIR__.'/auth.php';
