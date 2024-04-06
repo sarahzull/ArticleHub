@@ -39,4 +39,36 @@ class XsollaClient
                         ->post($apiUrl, $payload);
   }
 
+  public function getPlans(int $limit): array
+  {
+    $apiUrl = $this->apiBaseUrl . "projects/" . $this->projectId . "/subscriptions/plans";
+
+    $params = [
+      'limit' => $limit ?? 10
+    ];
+
+    return Http::withBasicAuth($this->merchantId, $this->apiMerchantKey)
+                ->get($apiUrl, $params)
+                ->json();
+  }
+
+  public function cancelSubscription(int $userId, int $subscriptionId, array $payload): array
+  {
+    $apiUrl = $this->apiBaseUrl . "projects/" . $this->projectId . "/users/" . $userId . "/subscriptions/" . $subscriptionId;
+
+    return Http::withBasicAuth($this->merchantId, $this->apiMerchantKey)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->put($apiUrl, $payload)
+                ->json();
+  }
+
+  public function getSubscriptionByUserId(array $params): array
+  {
+    $apiUrl = $this->apiBaseUrl . "merchants/" . $this->merchantId . "/subscriptions";
+
+    return Http::withBasicAuth($this->merchantId, $this->apiMerchantKey)
+                ->get($apiUrl, $params)
+                ->json();
+  }
+
 }
