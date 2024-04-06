@@ -169,6 +169,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        App\Providers\XsollaClientProvider::class,
+        App\Providers\XsollaServiceProvider::class,
     ])->toArray(),
 
     /*
