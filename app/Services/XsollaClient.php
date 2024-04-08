@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Config;
 
 class XsollaClient
 {
-  
-  // $merchantId = Config::get('services.xsolla.merchant_id');
-  // $projectId = Config::get('services.xsolla.project_id');
-  // $apiMerchantKey = Config::get('services.xsolla.api_key');
-
   private int $merchantId;
   private int $projectId;
   private string $apiMerchantKey;

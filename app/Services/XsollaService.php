@@ -75,8 +75,6 @@ class XsollaService
 
     public function cancelSubscription ($user_id, $subscription_id, $status)
     {
-        //https://api.xsolla.com/merchant/v2/projects/{project_id}/users/{user_id}/subscriptions/{subscription_id}
-
         /**
          * status: active, canceled, non_renewing
          */
