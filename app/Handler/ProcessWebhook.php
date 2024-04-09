@@ -13,8 +13,8 @@ class ProcessWebhook extends ProcessWebhookJob
 {
     public function handle()
     {
+        Log::info("payload", $this->webhookCall);
         $dat = json_decode($this->webhookCall, true);
-        Log::info("payload", $dat);
         $data = $dat['payload'];
     
         if ($data['event'] == 'charge.success') {
