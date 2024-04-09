@@ -16,4 +16,13 @@ class DefaultRespondsTo implements RespondsToWebhook
         Log::info("config", json_encode($config));
         return response()->json(['message' => 'ok']);
     }
+
+    public function respondToInvalidWebhook(Request $request, WebhookConfig $config, $reason = 'Invalid signature'): Response
+    {
+        Log::warning("Invalid webhook request received", [
+            'reason' => $reason,
+            'data' => $request->all()
+        ]);
+        return response()->json(['message' => 'not ok', 'error' => $reason], 400);
+    }
 }
