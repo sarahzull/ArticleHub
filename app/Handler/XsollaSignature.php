@@ -31,7 +31,7 @@ class XsollaSignature implements SignatureValidator
         if (hash_equals($generatedSignature, $signatureSent)) {
             return true;
         } else {
-            throw new WebhookFailed('Invalid signature.');
+            return response()->json(['error' => 'invalid signature'], 400);
         }
     }
 }
