@@ -3,6 +3,7 @@
 namespace App\Handler;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\Exceptions\WebhookFailed;
 use Spatie\WebhookClient\WebhookConfig;
 use Spatie\WebhookClient\SignatureValidator\SignatureValidator;
@@ -45,15 +46,19 @@ class XsollaSignature implements SignatureValidator
         $secret = $config->signingSecret;
         
         $authorizationHeader = $request->header($config->signatureHeaderName);
+        Log::info('authorization header', $authorizationHeader);
+
         if (strpos($authorizationHeader, 'Signature ') === 0) {
             $signatureSent = substr($authorizationHeader, strlen('Signature '));
+            Log::info('signature sent', $signatureSent);
         } else {
             return false;
         }
 
         $concatenated = $payload . $secret;
-
         $generatedSignature = sha1($concatenated);
+
+        Log::info('hash equals', hash_equals($generatedSignature, $signatureSent));
 
         return hash_equals($generatedSignature, $signatureSent);
     }
