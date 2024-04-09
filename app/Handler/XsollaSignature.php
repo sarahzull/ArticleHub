@@ -46,11 +46,11 @@ class XsollaSignature implements SignatureValidator
         $secret = $config->signingSecret;
         
         $authorizationHeader = $request->header($config->signatureHeaderName);
-        Log::info('authorization header', $authorizationHeader);
+        Log::debug('Authorization header', ['header' => $authorizationHeader]);
 
         if (strpos($authorizationHeader, 'Signature ') === 0) {
             $signatureSent = substr($authorizationHeader, strlen('Signature '));
-            Log::info('signature sent', $signatureSent);
+            Log::debug('Signature sent', ['signature' => $signatureSent]);
         } else {
             return false;
         }
@@ -58,7 +58,7 @@ class XsollaSignature implements SignatureValidator
         $concatenated = $payload . $secret;
         $generatedSignature = sha1($concatenated);
 
-        Log::info('hash equals', hash_equals($generatedSignature, $signatureSent));
+        Log::debug('Hash equals', ['result' => hash_equals($generatedSignature, $signatureSent)]);
 
         return hash_equals($generatedSignature, $signatureSent);
     }
