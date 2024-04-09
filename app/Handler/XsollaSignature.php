@@ -61,6 +61,10 @@ class XsollaSignature implements SignatureValidator
 
         Log::debug('Hash equals', ['result' => hash_equals($generatedSignature, $signatureSent)]);
 
-        return hash_equals($generatedSignature, $signatureSent);
+        if (hash_equals($generatedSignature, $signatureSent)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
