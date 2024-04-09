@@ -13,7 +13,6 @@ class DefaultRespondsTo implements RespondsToWebhook
     public function respondToValidWebhook(Request $request, WebhookConfig $config): Response
     {
         Log::info("request", $request->all());
-        Log::info("config", $config);
         return response()->json(['message' => 'ok']);
     }
 }
