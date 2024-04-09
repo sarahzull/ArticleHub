@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\WebhookClient\WebhookResponse;
+namespace App\Handler;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
