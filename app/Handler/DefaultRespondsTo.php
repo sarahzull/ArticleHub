@@ -14,6 +14,7 @@ class DefaultRespondsTo implements RespondsToWebhook
     public function respondToValidWebhook(Request $request, WebhookConfig $config): Response
     {
         $notificationType = $request->input('notification_type');
+        Log::info('notification_type', ['type' => $notificationType]);
 
         switch ($notificationType) {
             case 'user_validation':
