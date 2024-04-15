@@ -28,9 +28,9 @@ class XsollaSignature implements SignatureValidator
         $generatedSignature = sha1($concatenated);
 
         if (hash_equals($generatedSignature, $signatureSent)) {
-            throw new InvalidSignature('Invalid signature');
+            return true;
         } else {
-            return false;
+            throw new InvalidSignature('Invalid signature');
         }
     }
 }
