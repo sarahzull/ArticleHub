@@ -19,16 +19,16 @@ class DefaultRespondsTo implements RespondsToWebhook
         switch ($notificationType) {
             case 'user_validation':
                 Log::info('user_validation');
-                $this->handleUserValidation($request);
-                break;
+                return $this->handleUserValidation($request);
+
             case 'created_subscription':
                 Log::info('user_validation');
-                $this->handleCreatedSubscription($request);
-                break;
+                return $this->handleCreatedSubscription($request);
+
             case 'canceled_subscription':
                 Log::info('user_validation');
-                $this->handleCanceledSubscription($request);
-                break;
+                return $this->handleCanceledSubscription($request);
+
             default:
                 Log::warning('Unsupported notification type', ['type' => $notificationType]);
                 return response()->json([
