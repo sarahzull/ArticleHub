@@ -5,7 +5,8 @@ namespace App\Handler;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\InvalidSignatureException;
 use Illuminate\Support\Facades\Log;
-use Spatie\WebhookClient\Exceptions\InvalidWebhookSignature;
+use app\Handler\InvalidSignature;
+use InvalidSignature as GlobalInvalidSignature;
 use Spatie\WebhookClient\WebhookConfig;
 use Spatie\WebhookClient\SignatureValidator\SignatureValidator;
 
@@ -28,7 +29,7 @@ class XsollaSignature implements SignatureValidator
         $generatedSignature = sha1($concatenated);
 
         if (hash_equals($generatedSignature, $signatureSent)) {
-            throw InvalidWebhookSignature::invalidSignature($request);
+            throw GlobalInvalidSignature::invalidSignature($request);
         } else {
             return false;
         }
