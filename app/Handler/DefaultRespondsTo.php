@@ -18,20 +18,23 @@ class DefaultRespondsTo implements RespondsToWebhook
 
         switch ($notificationType) {
             case 'user_validation':
+                Log::info('user_validation');
                 $this->handleUserValidation($request);
                 break;
             case 'created_subscription':
+                Log::info('user_validation');
                 $this->handleCreatedSubscription($request);
                 break;
             case 'canceled_subscription':
+                Log::info('user_validation');
                 $this->handleCanceledSubscription($request);
                 break;
         }
         
-        return response()->json(['message' => 'ok']);
+        return response()->json(['message' => 'not ok']);
     }
 
-    protected function handleUserValidation(Request $request)
+    protected function handleUserValidation(Request $request): Response
     {
         $userData = $request->input('user');
 

@@ -2,6 +2,7 @@
 
 namespace App\Handler;
 
+use App\Services\UserService;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
 
@@ -13,12 +14,37 @@ class ProcessWebhook extends ProcessWebhookJob
 {
     public function handle()
     {
-        Log::info("payload", $this->webhookCall);
         $response = json_decode($this->webhookCall, true);
         $data = $response['payload'];
         $type = $data['notification_type'];
     
         if ($type == 'user_validation') {
+          $userData = $data['user'];
+
+          if (isset($userData['id'])) {
+              $exist = UserService::checkUserExists($userData['id']);
+
+              if ($exist) {
+                  return response()->json([
+                      'code' => "200",
+                      'message' => 'user exists.'
+                  ], 200);
+              } else {
+                  return response()->json([
+                      'error' => [
+                          'code' => "400",
+                          'message' => 'user not found.'
+                      ]
+                  ], 400);
+              }
+          }
+
+          return response()->json([
+              'error' => [
+                  'code' => "400",
+                  'message' => 'user id is required.'
+              ]
+          ], 400);
 
         } elseif ($type == 'created_subscription') {
 
