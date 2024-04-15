@@ -14,7 +14,18 @@ class ProcessWebhook extends ProcessWebhookJob
 {
     public function handle()
     {
-        $response = json_decode($this->webhookCall, true);
+      try {
+          $isValid = $this->signatureValidator->isValid($this->request, $this->config);
+          if (!$isValid) {
+              return response()->json([
+                'error' => [
+                  'code' => 'INVALID_SIGNATURE', 
+                  'message' => 'Invalid signature'
+                ]
+              ], 400);
+          }
+
+          $response = json_decode($this->webhookCall, true);
         $data = $response['payload'];
         $type = $data['notification_type'];
     
@@ -53,5 +64,20 @@ class ProcessWebhook extends ProcessWebhookJob
         }
 
         http_response_code(200);
+
+      } catch (WebhookFailed $exception) {
+          $errorMessage = $exception->getMessage();
+          return response()->json([
+            'error' => [
+              'code' => 'INVALID_SIGNATURE', 
+              'message' => 'Invalid signature'
+            ]
+          ], 400);
+
+      } catch (Exception $exception) {
+          logger()->error('Error processing webhook: ' . $exception->getMessage());
+          return response()->json(['error' => 'INTERNAL_SERVER_ERROR', 'message' => 'Internal server error'], 500);
+      }
+
     }
 }

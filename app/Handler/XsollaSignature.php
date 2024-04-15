@@ -26,8 +26,6 @@ class XsollaSignature implements SignatureValidator
         $concatenated = $payload . $secret;
         $generatedSignature = sha1($concatenated);
 
-        Log::debug('Hash equals', ['result' => hash_equals($generatedSignature, $signatureSent)]);
-
         if (hash_equals($generatedSignature, $signatureSent)) {
             return true;
         } else {
