@@ -57,8 +57,8 @@ class DefaultRespondsTo implements RespondsToWebhook
             } else {
                 return response()->json([
                     'error' => [
-                        'code' => "400",
-                        'message' => 'user not found.'
+                        'code' => "INVALID_USER",
+                        'message' => 'Invalid user'
                     ]
                 ], 400);
             }
@@ -66,8 +66,8 @@ class DefaultRespondsTo implements RespondsToWebhook
 
         return response()->json([
             'error' => [
-                'code' => "400",
-                'message' => 'user id is required.'
+                'code' => "INVALID_PARAMETER",
+                'message' => 'Invalid parameter'
             ]
         ], 400);
     }
