@@ -14,18 +14,18 @@ class ProcessWebhook extends ProcessWebhookJob
     public function handle()
     {
         Log::info("payload", $this->webhookCall);
-        $dat = json_decode($this->webhookCall, true);
-        $data = $dat['payload'];
+        $response = json_decode($this->webhookCall, true);
+        $data = $response['payload'];
+        $type = $data['notification_type'];
     
-        if ($data['event'] == 'charge.success') {
-          // take action since the charge was success
-          // Create order
-          // Sed email
-          // Whatever you want
-          Log::info($data);
+        if ($type == 'user_validation') {
+
+        } elseif ($type == 'created_subscription') {
+
+        } elseif ($type == 'canceled_subscription') {
+
         }
 
-        //Acknowledge you received the response
         http_response_code(200);
     }
 }
