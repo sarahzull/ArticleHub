@@ -29,9 +29,17 @@ class DefaultRespondsTo implements RespondsToWebhook
                 Log::info('user_validation');
                 $this->handleCanceledSubscription($request);
                 break;
+            default:
+                Log::warning('Unsupported notification type', ['type' => $notificationType]);
+                return response()->json([
+                    'error' => [
+                        'code' => '400',
+                        'message' => 'Invalid or unsupported notification type.'
+                    ]
+                ], 400);
         }
         
-        return response()->json(['message' => 'not ok']);
+        // return response()->json(['message' => 'not ok']);
     }
 
     protected function handleUserValidation(Request $request): Response
