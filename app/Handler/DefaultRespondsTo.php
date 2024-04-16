@@ -15,27 +15,24 @@ class DefaultRespondsTo implements RespondsToWebhook
     public function respondToValidWebhook(Request $request, WebhookConfig $config): Response
     {
         $notificationType = $request->input('notification_type');
-        Log::info('notification_type', ['type' => $notificationType]);
 
         switch ($notificationType) {
             case 'user_validation':
-                Log::info('user_validation');
                 return WebhookService::userValidation($request);
 
             case 'created_subscription':
-                Log::info('created_subscription');
-                return $this->handleCreatedSubscription($request);
+                // return $this->handleCreatedSubscription($request);
+                return response()->json(['message' => 'ok']);
 
             case 'canceled_subscription':
-                Log::info('canceled_subscription');
-                return $this->handleCanceledSubscription($request);
+                // return $this->handleCanceledSubscription($request);
+                return response()->json(['message' => 'ok']);
 
             case 'payment':
-                Log::info('payment');
-                return $this->handleCanceledSubscription($request);
+                // return $this->handleCanceledSubscription($request);
+                return response()->json(['message' => 'ok']);
 
             default:
-                Log::warning('Unsupported notification type', ['type' => $notificationType]);
                 return response()->json([
                     'error' => [
                         'code' => '400',
