@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class WebhookService
@@ -13,6 +14,7 @@ class WebhookService
 {
     public static function userValidation ($request) 
     {
+        Log::info("request - userValidation", $request->all());
         $userData = $request->input('user');
 
         if (isset($userData['id'])) {
@@ -43,6 +45,7 @@ class WebhookService
 
     public static function createdSubscription ($request) 
     {
+        Log::info("request - createdSubscription", $request->all());
         $user = $request->input('user');
         $subscription = $request->input('subscription');
         $subscriptionPlan = SubscriptionPlan::where('plan_id', $subscription['plan_id'])->first();
