@@ -3,6 +3,7 @@
 namespace App\Handler;
 
 use App\Services\UserService;
+use App\Services\WebhookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\WebhookConfig;
@@ -19,14 +20,18 @@ class DefaultRespondsTo implements RespondsToWebhook
         switch ($notificationType) {
             case 'user_validation':
                 Log::info('user_validation');
-                return $this->handleUserValidation($request);
+                return WebhookService::userValidation($request);
 
             case 'created_subscription':
-                Log::info('user_validation');
+                Log::info('created_subscription');
                 return $this->handleCreatedSubscription($request);
 
             case 'canceled_subscription':
-                Log::info('user_validation');
+                Log::info('canceled_subscription');
+                return $this->handleCanceledSubscription($request);
+
+            case 'payment':
+                Log::info('payment');
                 return $this->handleCanceledSubscription($request);
 
             default:
@@ -40,36 +45,6 @@ class DefaultRespondsTo implements RespondsToWebhook
         }
         
         // return response()->json(['message' => 'not ok']);
-    }
-
-    protected function handleUserValidation(Request $request): Response
-    {
-        $userData = $request->input('user');
-
-        if (isset($userData['id'])) {
-            $exist = UserService::checkUserExists($userData['id']);
-
-            if ($exist) {
-                return response()->json([
-                    'code' => "200",
-                    'message' => 'user exists.'
-                ], 200);
-            } else {
-                return response()->json([
-                    'error' => [
-                        'code' => "INVALID_USER",
-                        'message' => 'Invalid user'
-                    ]
-                ], 400);
-            }
-        }
-
-        return response()->json([
-            'error' => [
-                'code' => "INVALID_PARAMETER",
-                'message' => 'Invalid parameter'
-            ]
-        ], 400);
     }
 
     protected function handleCreatedSubscription(Request $request)
