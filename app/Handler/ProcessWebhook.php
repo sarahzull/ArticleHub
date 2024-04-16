@@ -17,11 +17,12 @@ class ProcessWebhook extends ProcessWebhookJob
     {
         $response = json_decode($this->webhookCall, true);
         $data = $response['payload'];
+        Log::info('webhook data', $data);
         $notificationType = $data['notification_type'];
 
         switch ($notificationType) {
-            case 'user_validation':
-                return WebhookService::userValidation($data);
+            // case 'user_validation':
+            //     return WebhookService::userValidation($data);
 
             case 'create_subscription':
                 return response()->json(['message' => 'ok']);
