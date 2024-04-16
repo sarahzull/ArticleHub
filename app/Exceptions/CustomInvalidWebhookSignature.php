@@ -9,8 +9,10 @@ class CustomInvalidWebhookSignature extends InvalidWebhookSignature
     public function render($request)
     {
         return response()->json([
-            'code' => 'INVALID_SIGNATURE',
-            'message' => 'Invalid Signature'
+            'error' => [
+              'code' => 'INVALID_SIGNATURE',
+              'message' => 'Invalid signature'
+            ]
         ], 400);
     }
 }
