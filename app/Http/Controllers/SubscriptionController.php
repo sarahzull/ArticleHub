@@ -47,13 +47,13 @@ class SubscriptionController extends Controller
         
         $token = $xsollaService->createUserToken($user, $plan, $items);
 
-        SubscriptionUser::create([
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'start_date' => now(),
-            'end_date' => now()->addDays(30),
-            'status' => 'new',
-        ]);
+        // SubscriptionUser::create([
+        //     'user_id' => $user->id,
+        //     'subscription_plan_id' => $plan->id,
+        //     'start_date' => now(),
+        //     'end_date' => now()->addDays(30),
+        //     'status' => 'new',
+        // ]);
 
         $redirectUrl = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
         

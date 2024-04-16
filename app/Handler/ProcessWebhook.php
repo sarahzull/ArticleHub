@@ -3,6 +3,7 @@
 namespace App\Handler;
 
 use App\Services\UserService;
+use App\Services\WebhookService;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
 
@@ -14,70 +15,32 @@ class ProcessWebhook extends ProcessWebhookJob
 {
     public function handle()
     {
-      try {
-          $isValid = $this->signatureValidator->isValid($this->request, $this->config);
-          if (!$isValid) {
-              return response()->json([
-                'error' => [
-                  'code' => 'INVALID_SIGNATURE', 
-                  'message' => 'Invalid signature'
-                ]
-              ], 400);
-          }
-
-          $response = json_decode($this->webhookCall, true);
+        $response = json_decode($this->webhookCall, true);
         $data = $response['payload'];
-        $type = $data['notification_type'];
-    
-        if ($type == 'user_validation') {
-          $userData = $data['user'];
+        $notificationType = $data['notification_type'];
 
-          if (isset($userData['id'])) {
-              $exist = UserService::checkUserExists($userData['id']);
+        switch ($notificationType) {
+            case 'user_validation':
+                return WebhookService::userValidation($data);
 
-              if ($exist) {
-                  return response()->json([
-                      'code' => "200",
-                      'message' => 'user exists.'
-                  ], 200);
-              } else {
-                  return response()->json([
-                      'error' => [
-                          'code' => "400",
-                          'message' => 'user not found.'
-                      ]
-                  ], 400);
-              }
-          }
+            case 'create_subscription':
+                return response()->json(['message' => 'ok']);
 
-          return response()->json([
-              'error' => [
-                  'code' => "400",
-                  'message' => 'user id is required.'
-              ]
-          ], 400);
+            case 'cancel_subscription':
+                return response()->json(['message' => 'ok']);
 
-        } elseif ($type == 'created_subscription') {
+            case 'payment':
+                return response()->json(['message' => 'ok']);
 
-        } elseif ($type == 'canceled_subscription') {
-
+            default:
+                return response()->json([
+                    'error' => [
+                        'code' => '400',
+                        'message' => 'Invalid or unsupported notification type.'
+                    ]
+                ], 400);
         }
-
+        
         http_response_code(200);
-
-      } catch (WebhookFailed $exception) {
-          $errorMessage = $exception->getMessage();
-          return response()->json([
-            'error' => [
-              'code' => 'INVALID_SIGNATURE', 
-              'message' => 'Invalid signature'
-            ]
-          ], 400);
-
-      } catch (Exception $exception) {
-          logger()->error('Error processing webhook: ' . $exception->getMessage());
-          return response()->json(['error' => 'INTERNAL_SERVER_ERROR', 'message' => 'Internal server error'], 500);
-      }
-
     }
 }

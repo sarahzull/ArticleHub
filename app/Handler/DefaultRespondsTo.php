@@ -21,15 +21,12 @@ class DefaultRespondsTo implements RespondsToWebhook
                 return WebhookService::userValidation($request);
 
             case 'created_subscription':
-                // return $this->handleCreatedSubscription($request);
                 return response()->json(['message' => 'ok']);
 
             case 'canceled_subscription':
-                // return $this->handleCanceledSubscription($request);
                 return response()->json(['message' => 'ok']);
 
             case 'payment':
-                // return $this->handleCanceledSubscription($request);
                 return response()->json(['message' => 'ok']);
 
             default:
@@ -42,15 +39,5 @@ class DefaultRespondsTo implements RespondsToWebhook
         }
         
         // return response()->json(['message' => 'not ok']);
-    }
-
-    protected function handleCreatedSubscription(Request $request)
-    {
-        // Implement logic to handle 'created_subscription' notification type
-    }
-
-    protected function handleCanceledSubscription(Request $request)
-    {
-        // Implement logic to handle 'canceled_subscription' notification type
     }
 }
