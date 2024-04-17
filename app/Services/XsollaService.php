@@ -68,7 +68,7 @@ class XsollaService
         return $this->client->createToken($payload)->json();
     }
 
-    public function getPlans ($limit) 
+    public function getPlans (int $limit) 
     {
         return $this->client->getPlans($limit);
     }
