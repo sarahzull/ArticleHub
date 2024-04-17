@@ -10,6 +10,7 @@ use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
