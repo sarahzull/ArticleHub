@@ -53,9 +53,22 @@ class WebhookService
         SubscriptionUser::create([
             'user_id' => $user['id'],
             'subscription_plan_id' => $subscriptionPlan->id,
+            'subscription_id' => $subscription['subscription_id'],
             'start_date' => $subscription['date_create'],
             'end_date' => Carbon::parse(subscription['date_create'])->addDays(30),
             'status' => 'new',
+        ]);
+    }
+
+    public static function updatedSubscription ($request) 
+    {
+        Log::info("request - updatedSubscription", $request->all());
+        $user = $request->input('user');
+        $subscription = $request->input('subscription');
+
+        SubscriptionUser::where('user_id', $user['id'])->update([
+            'subscription_id' => $subscription['subscription_id'],
+            'status' => 'active',
         ]);
     }
 }

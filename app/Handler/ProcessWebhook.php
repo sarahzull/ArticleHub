@@ -25,7 +25,10 @@ class ProcessWebhook extends ProcessWebhookJob
             //     return WebhookService::userValidation($data);
 
             case 'create_subscription':
-                return response()->json(['message' => 'ok']);
+                return WebhookService::createdSubscription($data);
+
+            case 'update_subscription':
+                return WebhookService::createdSubscription($data);
 
             case 'cancel_subscription':
                 return response()->json(['message' => 'ok']);
