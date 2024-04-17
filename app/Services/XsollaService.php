@@ -48,7 +48,7 @@ class XsollaService
                     ],
                     "size" => "medium",
                 ],
-                "return_url" => "$this->appUrl/api/v1/subscription/callback?=user_sub_id=$userSubId&",
+                "return_url" => "$this->appUrl/api/v1/subscription/callback?=user_sub_id=$userSubId",
                 "redirect_policy" => [
                     "redirect_button_caption" => "Back to Site",
                 ],
