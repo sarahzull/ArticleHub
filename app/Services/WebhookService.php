@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\SubscriptionPlan;
 use Carbon\Carbon;
+use App\Models\SubscriptionPlan;
+use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -70,5 +71,17 @@ class WebhookService
             'subscription_id' => $subscription['subscription_id'],
             'status' => 'active',
         ]);
+    }
+
+    public static function payment ($request) 
+    {
+        Log::info("request - payment", $request->all());
+        // $user = $request->input('user');
+        // $subscription = $request->input('subscription');
+
+        // SubscriptionUser::where('user_id', $user['id'])->update([
+        //     'subscription_id' => $subscription['subscription_id'],
+        //     'status' => 'active',
+        // ]);
     }
 }

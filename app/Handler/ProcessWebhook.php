@@ -28,13 +28,13 @@ class ProcessWebhook extends ProcessWebhookJob
                 return WebhookService::createdSubscription($data);
 
             case 'update_subscription':
-                return WebhookService::createdSubscription($data);
+                return WebhookService::updatedSubscription($data);
 
             case 'cancel_subscription':
                 return response()->json(['message' => 'ok']);
 
             case 'payment':
-                return response()->json(['message' => 'ok']);
+                return WebhookService::payment($data);
 
             default:
                 return response()->json([
