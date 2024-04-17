@@ -66,7 +66,7 @@ class SubscriptionController extends Controller
                                 ->where('status', 'new')
                                 ->first();
         $user = User::find($request->input('user_id'));
-        $plan = SubscriptionPlan::with('permission')->where('id', $subs->plan->id)->first();
+        $plan = SubscriptionPlan::with('permission')->where('id', $subs->subscription_plan_id)->first();
 
         if ($request->input('status') == 'done') {
             $subs->update([
