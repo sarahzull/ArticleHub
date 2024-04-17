@@ -31,29 +31,28 @@ class SubscriptionController extends Controller
         $user_id = auth()->user()->id;
         $items = [];
 
-        $userSub = SubscriptionUser::where('user_id', auth()->user()->id)->where('status', 'active')->first();
-
-        if ($userSub) {
-            $items = [
-                "change_plan" => true,
-            ];
-        }
-
+        $userSubcription = SubscriptionUser::where('user_id', auth()->user()->id)->where('status', 'active')->first();
         $user = User::find($user_id);
         $plan = SubscriptionPlan::with('permission')->where('plan_id', $plan_id)->first();
 
-        $user->revokePermissionTo($plan->permission->name);
-        SubscriptionUser::where('user_id', $user_id)->update(['status' => 'canceled']);
-        
-        $token = $xsollaService->createUserToken($user, $plan, $items);
+        if ($userSubcription) {
+            $items = [
+                "change_plan" => true,
+            ];
 
-        // SubscriptionUser::create([
-        //     'user_id' => $user->id,
-        //     'subscription_plan_id' => $plan->id,
-        //     'start_date' => now(),
-        //     'end_date' => now()->addDays(30),
-        //     'status' => 'new',
-        // ]);
+            $user->revokePermissionTo($plan->permission->name);
+            SubscriptionUser::where('user_id', $user_id)->update(['status' => 'canceled']);
+        } 
+
+        $userSub = SubscriptionUser::create([
+            'user_id' => $user->id,
+            'subscription_plan_id' => $plan->id,
+            'start_date' => now(),
+            'end_date' => now()->addDays(30),
+            'status' => 'new',
+        ]);
+        
+        $token = $xsollaService->createUserToken($user, $plan, $items, $userSubId = $userSub->id);
 
         $redirectUrl = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
         
@@ -62,7 +61,7 @@ class SubscriptionController extends Controller
 
     public function callback (Request $request)
     {   
-        $subs = SubscriptionUser::where('user_id', $request->input('user_id'))
+        $subs = SubscriptionUser::where('id', $request->input('user_sub_id'))
                                 ->where('status', 'new')
                                 ->first();
         $user = User::find($request->input('user_id'));

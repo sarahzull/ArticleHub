@@ -18,7 +18,7 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, XsollaService $xsollaService): Response
     {
         $user = auth()->user()->load('subscription.plan');
         
@@ -28,7 +28,7 @@ class ProfileController extends Controller
             $userPlan = null;
         }
 
-        $plans = XsollaService::getPlans(null);
+        $plans = $xsollaService->getPlans(null);
 
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
@@ -80,13 +80,13 @@ class ProfileController extends Controller
         //
     }
 
-    public function cancelPlan (Request $request) 
+    public function cancelPlan (Request $request, XsollaService $xsollaService) 
     {
         $user_id = auth()->user()->id;
-        $subscription = XsollaService::getSubscriptionByUserId($user_id);
+        $subscription = $xsollaService->getSubscriptionByUserId($user_id);
         $subscription_id = $subscription[0]['id'];
 
-        $response = XsollaService::cancelSubscription($user_id, $subscription_id, 'non_renewing');
+        $response = $xsollaService->cancelSubscription($user_id, $subscription_id, 'non_renewing');
 
         if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
             return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
