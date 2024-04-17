@@ -64,6 +64,8 @@ class SubscriptionController extends Controller
         $subs = SubscriptionUser::where('id', $request->input('user_sub_id'))
                                 ->where('status', 'new')
                                 ->first();
+        Log::info("callback", $request->all());
+        Log::info("subs", $subs);
         $user = User::find($request->input('user_id'));
         $plan = SubscriptionPlan::with('permission')->where('id', $subs->subscription_plan_id)->first();
 
