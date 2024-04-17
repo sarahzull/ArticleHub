@@ -28,7 +28,7 @@ class ProfileController extends Controller
             $userPlan = null;
         }
 
-        $plans = $xsollaService->getPlans(null);
+        $plans = $xsollaService->getPlans(10);
 
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
