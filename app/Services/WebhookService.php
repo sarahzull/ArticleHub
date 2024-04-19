@@ -49,7 +49,7 @@ class WebhookService
         Log::info("request - createdSubscription", ['request' => $request]);
         $user = $request['user'];
         $subscription = $request['subscription'];
-        $subscriptionPlan = SubscriptionPlan::where('plan_id', $subscription['plan_id'])->first();
+        $subscriptionPlan = SubscriptionPlan::where('external_id', $subscription['plan_id'])->first();
 
         SubscriptionUser::create([
             'user_id' => $user['id'],
