@@ -15,7 +15,7 @@ class WebhookService
 {
     public static function userValidation ($request) 
     {
-        Log::info("request - userValidation", $request->all());
+        Log::info("request - userValidation", ['request' => $request]);
         $userData = $request->input('user');
 
         if (isset($userData['id'])) {
@@ -46,9 +46,9 @@ class WebhookService
 
     public static function createdSubscription ($request) 
     {
-        Log::info("request - createdSubscription", $request->all());
-        $user = $request->input('user');
-        $subscription = $request->input('subscription');
+        Log::info("request - createdSubscription", ['request' => $request]);
+        $user = $request['user'];
+        $subscription = $request['subscription'];
         $subscriptionPlan = SubscriptionPlan::where('plan_id', $subscription['plan_id'])->first();
 
         SubscriptionUser::create([
@@ -63,9 +63,9 @@ class WebhookService
 
     public static function updatedSubscription ($request) 
     {
-        Log::info("request - updatedSubscription", $request->all());
-        $user = $request->input('user');
-        $subscription = $request->input('subscription');
+        Log::info("request - createdSubscription", ['request' => $request]);
+        $user = $request['user'];
+        $subscription = $request['subscription'];
 
         SubscriptionUser::where('subscription_plan_id', $subscription['subscription_id'])->update([
             // 'subscription_id' => $subscription['subscription_id'],
@@ -75,7 +75,7 @@ class WebhookService
 
     public static function payment ($request) 
     {
-        Log::info("request - payment", $request->all());
+        Log::info("request - payment", ['request' => $request]);
         // $user = $request->input('user');
         // $subscription = $request->input('subscription');
 
