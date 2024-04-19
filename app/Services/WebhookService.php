@@ -58,7 +58,7 @@ class WebhookService
             'subscription_plan_id' => $subscriptionPlan->id,
             'subscription_id' => $subscription['subscription_id'],
             'start_date' => $subscription['date_create'],
-            'end_date' => Carbon::parse(subscription['date_create'])->addDays(30),
+            'end_date' => Carbon::parse($subscription['date_create'])->addDays(30),
             'status' => 'new',
         ]);
 
