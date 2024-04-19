@@ -19,23 +19,21 @@ class ProcessWebhook extends ProcessWebhookJob
         $data = $response['payload'];
         Log::info('webhook data', $data);
         $notificationType = $data['notification_type'];
+        Log::info('Notification type received:', ['notification_type' => $notificationType]);
 
         switch ($notificationType) {
-            // case 'user_validation':
-            //     return WebhookService::userValidation($data);
-
             case 'create_subscription':
                 return WebhookService::createdSubscription($data);
-
+    
             case 'update_subscription':
                 return WebhookService::updatedSubscription($data);
-
+    
             case 'cancel_subscription':
                 return response()->json(['message' => 'ok']);
-
+    
             case 'payment':
                 return WebhookService::payment($data);
-
+    
             default:
                 return response()->json([
                     'error' => [
