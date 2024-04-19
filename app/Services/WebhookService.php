@@ -67,8 +67,8 @@ class WebhookService
         $user = $request->input('user');
         $subscription = $request->input('subscription');
 
-        SubscriptionUser::where('user_id', $user['id'])->update([
-            'subscription_id' => $subscription['subscription_id'],
+        SubscriptionUser::where('subscription_plan_id', $subscription['subscription_id'])->update([
+            // 'subscription_id' => $subscription['subscription_id'],
             'status' => 'active',
         ]);
     }
