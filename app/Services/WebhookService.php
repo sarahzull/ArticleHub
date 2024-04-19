@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\Log;
@@ -49,6 +50,7 @@ class WebhookService
         Log::info("request - createdSubscription", ['request' => $request]);
         $user = $request['user'];
         $subscription = $request['subscription'];
+        $type = $request['notification_type'];
         $subscriptionPlan = SubscriptionPlan::where('external_id', $subscription['plan_id'])->first();
 
         SubscriptionUser::create([
@@ -59,6 +61,15 @@ class WebhookService
             'end_date' => Carbon::parse(subscription['date_create'])->addDays(30),
             'status' => 'new',
         ]);
+
+        if ($type === 'update_subscription') {
+            $user = User::find($user['id']);
+            $user->givePermissionTo($subscriptionPlan->permission->name);
+
+            SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
+                'status' => 'active',
+            ]);
+        }
     }
 
     public static function updatedSubscription ($request) 
@@ -67,7 +78,7 @@ class WebhookService
         $user = $request['user'];
         $subscription = $request['subscription'];
 
-        SubscriptionUser::where('subscription_plan_id', $subscription['subscription_id'])->update([
+        SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
             // 'subscription_id' => $subscription['subscription_id'],
             'status' => 'active',
         ]);
