@@ -50,7 +50,7 @@ class SubscriptionController extends Controller
     
             // cancel current active subscription
             $activeSubscription->update([
-                'subscription_id' => null,
+                // 'subscription_id' => null,
                 'status' => 'canceled',
                 'end_date' => now(),
             ]);
