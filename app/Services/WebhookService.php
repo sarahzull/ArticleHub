@@ -60,23 +60,20 @@ class WebhookService
             'end_date' => Carbon::parse($subscription['date_next_charge']),
         ]);
 
-        if ($type === 'update_subscription') {
-            $user = User::find($user['id']);
-            $user->givePermissionTo($subscriptionPlan->permission->name);
-
-            SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
-                'status' => 'active',
-            ]);
-        }
+        $user = User::find($user['id']);
+        $user->givePermissionTo($subscriptionPlan->permission->name);
     }
 
-    public static function updatedSubscription ($request) 
+    public static function updatedSubscription($request)
     {
-        Log::info("request - createdSubscription", ['request' => $request]);
+        Log::info("request - updatedSubscription", ['request' => $request]);
         $user = $request['user'];
         $subscription = $request['subscription'];
 
         SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
+            'subscription_id' => $subscription['subscription_id'],
+            'start_date' => Carbon::parse($subscription['date_create']),
+            'end_date' => Carbon::parse($subscription['date_next_charge']),
             'status' => 'active',
         ]);
     }

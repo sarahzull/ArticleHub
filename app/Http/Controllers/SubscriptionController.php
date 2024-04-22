@@ -29,23 +29,35 @@ class SubscriptionController extends Controller
     public function redirect (Request $request, XsollaService $xsollaService)
     {
         $plan_id = $request->input('plan_id');
-        $user_id = auth()->user()->id;
+        $user = auth()->user();
         $items = [];
 
-        $userSubcription = SubscriptionUser::where('user_id', auth()->user()->id)->where('status', 'active')->first();
-        $user = User::find($user_id);
-        $plan = SubscriptionPlan::with('permission')->where('plan_id', $plan_id)->first();
+        // find active subscription user
+        $activeSubscription = SubscriptionUser::where('user_id', $user->id)
+        ->where('status', 'active')
+        ->first();
 
-        if ($userSubcription) {
+        // retrieve selected subscription plan
+        $plan = SubscriptionPlan::with('permission')
+        ->where('plan_id', $plan_id)
+        ->first();
+
+        if ($activeSubscription) {
             $items = [
                 "change_plan" => true,
             ];
-
             $user->revokePermissionTo($plan->permission->name);
-            SubscriptionUser::where('user_id', $user_id)->update(['status' => 'canceled']);
-        } 
+    
+            // cancel current active subscription
+            $activeSubscription->update([
+                'subscription_id' => null,
+                'status' => 'canceled',
+                'end_date' => now(),
+            ]);
+        }
 
-        $userSub = SubscriptionUser::create([
+        // create new subscription for user
+        $newSubscription = SubscriptionUser::create([
             'user_id' => $user->id,
             'subscription_plan_id' => $plan->id,
             'start_date' => now(),
@@ -53,7 +65,7 @@ class SubscriptionController extends Controller
             'status' => 'new',
         ]);
         
-        $token = $xsollaService->createUserToken($user, $plan, $items, $userSubId = $userSub->id);
+        $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
 
         $redirectUrl = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
         
@@ -63,9 +75,9 @@ class SubscriptionController extends Controller
     public function callback (Request $request)
     {   
         $subs = SubscriptionUser::where('id', $request->input('user_sub_id'))
-                                ->where('status', 'new')
-                                ->first();
-        Log::info("callback", $request->all());
+        ->where('status', 'new')
+        ->first();
+        Log::info("callback received", $request->all());
         
         $user = User::find($request->input('user_id'));
         $plan = SubscriptionPlan::with('permission')->where('id', $subs->subscription_plan_id)->first();
