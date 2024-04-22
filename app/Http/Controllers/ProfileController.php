@@ -91,6 +91,11 @@ class ProfileController extends Controller
         $response = $xsollaService->cancelSubscription($user_id, $activeSubscription->subscription_id, 'non_renewing');
 
         if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
+            $activeSubscription->update([
+                'status' => $response['status'],
+                'end_date' => now(),
+            ]);
+            
             return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
         } else {
             return Redirect::route('profile.edit')->with('error', 'Request failed.');
