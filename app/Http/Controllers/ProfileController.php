@@ -83,10 +83,11 @@ class ProfileController extends Controller
     public function cancelPlan (Request $request, XsollaService $xsollaService) 
     {
         $user_id = auth()->user()->id;
-        $subscription = $xsollaService->getSubscriptionByUserId($user_id);
-        $subscription_id = $subscription[0]['id'];
+        $activeSubscription = SubscriptionUser::where('user_id', $user_id)
+        ->where('status', 'active')
+        ->first();
 
-        $response = $xsollaService->cancelSubscription($user_id, $subscription_id, 'non_renewing');
+        $response = $xsollaService->cancelSubscription($user_id, $activeSubscription->subscription_id, 'non_renewing');
 
         if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
             return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
