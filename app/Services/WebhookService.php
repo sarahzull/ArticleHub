@@ -93,7 +93,7 @@ class WebhookService
             ->where('subscription_id', $subscription['subscription_id'])
             ->where('status', 'active')
             ->update([
-            'status' => 'canceled',
+            'status' => 'non_renewing',
             'end_date' => Carbon::parse($subscription['date_end']),
             'updated_at' => now(),
         ]);
