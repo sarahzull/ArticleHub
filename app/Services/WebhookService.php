@@ -52,14 +52,12 @@ class WebhookService
         $subscription = $request['subscription'];
         $type = $request['notification_type'];
         $subscriptionPlan = SubscriptionPlan::where('external_id', $subscription['plan_id'])->first();
+        $newUser = SubscriptionUser::where('user_id', $user['id'])->where('status', 'new')->first();
 
-        SubscriptionUser::create([
-            'user_id' => $user['id'],
-            'subscription_plan_id' => $subscriptionPlan->id,
+        $newUser->update([
             'subscription_id' => $subscription['subscription_id'],
             'start_date' => Carbon::parse($subscription['date_create']),
-            'end_date' => Carbon::parse($subscription['date_create'])->addDays(30),
-            'status' => 'new',
+            'end_date' => Carbon::parse($subscription['date_next_charge']),
         ]);
 
         if ($type === 'update_subscription') {
@@ -79,7 +77,6 @@ class WebhookService
         $subscription = $request['subscription'];
 
         SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
-            // 'subscription_id' => $subscription['subscription_id'],
             'status' => 'active',
         ]);
     }
