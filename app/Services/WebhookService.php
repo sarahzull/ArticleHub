@@ -79,7 +79,7 @@ class WebhookService
         ]);
     }
 
-    public static function cancelSubscription ($request)
+    public static function canceledSubscription ($request)
     {
         Log::info("request - cancelSubscription", ['request' => $request]);
         $user = $request['user'];
