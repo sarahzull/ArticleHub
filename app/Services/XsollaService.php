@@ -87,21 +87,21 @@ class XsollaService
 
         $response = $this->client->cancelSubscription($user_id, $subscription_id, $payload);
 
-        $subscription = SubscriptionPlan::with('permission')->where('plan_id', $response['plan']['id'])->first();
+        // $subscription = SubscriptionPlan::with('permission')->where('plan_id', $response['plan']['id'])->first();
         
-        if ($status === 'canceled') {
-            $user = User::find($user_id);
-            $user->revokePermissionTo($subscription->permission->name);
-        }
+        // if ($status === 'canceled') {
+        //     $user = User::find($user_id);
+        //     $user->revokePermissionTo($subscription->permission->name);
+        // }
 
-        $user = SubscriptionUser::where('user_id', $user_id)
-            ->where('subscription_plan_id', $subscription->id)
-            ->where('status', 'active')
-            ->update([
-            'status' => $response['status'],
-            'end_date' => Carbon::parse($response['date_end']),
-            'updated_at' => now(),
-        ]);
+        // $user = SubscriptionUser::where('user_id', $user_id)
+        //     ->where('subscription_plan_id', $subscription->id)
+        //     ->where('status', 'active')
+        //     ->update([
+        //     'status' => $response['status'],
+        //     'end_date' => Carbon::parse($response['date_end']),
+        //     'updated_at' => now(),
+        // ]);
 
         return $response;
     }
