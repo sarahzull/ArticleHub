@@ -93,6 +93,26 @@ class WebhookService
             ->where('subscription_id', $subscription['subscription_id'])
             ->where('status', 'active')
             ->update([
+            'status' => 'canceled',
+            'end_date' => Carbon::parse($subscription['date_end']),
+            'updated_at' => now(),
+        ]);
+    }
+
+    public static function nonRenewalSubscription ($request)
+    {
+        Log::info("request - nonRenewalSubscription", ['request' => $request]);
+        $user = $request['user'];
+        $subscription = $request['subscription'];
+        $plan = SubscriptionPlan::with('permission')->where('external_id', $subscription['plan_id'])->first();
+        
+        $user = User::find($user['id']);
+        $user->revokePermissionTo($plan->permission->name);
+
+        $user = SubscriptionUser::where('user_id', $user['id'])
+            ->where('subscription_id', $subscription['subscription_id'])
+            ->where('status', 'non_renewing')
+            ->update([
             'status' => 'non_renewing',
             'end_date' => Carbon::parse($subscription['date_end']),
             'updated_at' => now(),

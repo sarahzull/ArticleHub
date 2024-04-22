@@ -88,7 +88,7 @@ class ProfileController extends Controller
         ->where('status', 'active')
         ->first();
 
-        $response = $xsollaService->cancelSubscription($user_id, $activeSubscription->subscription_id, 'non_renewing');
+        $response = $xsollaService->cancelSubscription($user_id, $activeSubscription->subscription_id, 'cancel');
 
         if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
             $activeSubscription->update([

@@ -31,6 +31,9 @@ class ProcessWebhook extends ProcessWebhookJob
             case 'cancel_subscription':
                 return WebhookService::canceledSubscription($data);
 
+            case 'non_renewal_subscription':
+                return WebhookService::nonRenewalSubscription($data);
+
             case 'payment':
                 return WebhookService::payment($data);
 
