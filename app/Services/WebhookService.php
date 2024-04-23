@@ -72,7 +72,6 @@ class WebhookService
 
         SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
             'subscription_id' => $subscription['subscription_id'],
-            'start_date' => Carbon::parse($subscription['date_create']),
             'end_date' => Carbon::parse($subscription['date_next_charge']),
             'status' => 'active',
             'updated_at' => now(),
@@ -94,7 +93,7 @@ class WebhookService
             ->where('status', 'active')
             ->update([
             'status' => 'canceled',
-            'end_date' => Carbon::parse($subscription['date_end']),
+            'end_date' => Carbon::parse($subscription['date_next_charge']),
             'updated_at' => now(),
         ]);
     }
