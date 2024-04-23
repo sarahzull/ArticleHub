@@ -84,7 +84,6 @@ class XsollaService
             "status" => $status,
             // "cancel_subscription_payment" => true,
         ];
-        Log::info("cancelSubscription", ['payload' => $payload]);
 
         $response = $this->client->cancelSubscription($user_id, $subscription_id, $payload);
         Log::info("cancelSubscription", ['response' => $response]);
