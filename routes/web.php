@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('profile/plan', [ProfileController::class, 'updatePlan'])->name('profile.updatePlan');
     Route::post('profile/cancelPlan', [ProfileController::class, 'cancelPlan'])->name('profile.cancelPlan');
+    Route::post('profile/nonRenewPlan', [ProfileController::class, 'nonRenewPlan'])->name('profile.nonRenewPlan');
 
     Route::get('/personalized', [PlanController::class, 'index'])->name('personalized.index');
 });

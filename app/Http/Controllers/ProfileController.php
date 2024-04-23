@@ -101,4 +101,27 @@ class ProfileController extends Controller
             return Redirect::route('profile.edit')->with('error', 'Request failed.');
         }
     }
+
+    public function nonRenewPlan (Request $request, XsollaService $xsollaService) 
+    {
+        $user_id = auth()->user()->id;
+        $activeSubscription = SubscriptionUser::where('user_id', $user_id)
+        ->where('status', 'active')
+        ->first();
+
+        dd($activeSubscription);
+
+        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, 'non_renewing');
+
+        if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
+            $activeSubscription->update([
+                'status' => $response['status'],
+                'end_date' => now(),
+            ]);
+            
+            return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
+        } else {
+            return Redirect::route('profile.edit')->with('error', 'Request failed.');
+        }
+    }
 }
