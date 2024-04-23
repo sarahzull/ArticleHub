@@ -108,8 +108,9 @@ class ProfileController extends Controller
         $activeSubscription = SubscriptionUser::where('user_id', $user_id)
         ->where('status', 'active')
         ->first();
+        Log::info("nonRenewPlan", ['activeSubscription' => $activeSubscription]);
 
-        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, 'canceled');
+        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, 'non_renewing');
 
         if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
             $activeSubscription->update([
