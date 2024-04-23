@@ -42,6 +42,8 @@ class XsollaClient
       'limit' => $limit ?? 10
     ];
 
+    Log::info("getPlans - params", ['params' => $params]);
+
     return Http::withBasicAuth($this->merchantId, $this->apiMerchantKey)
                 ->get($apiUrl, $params)
                 ->json();
