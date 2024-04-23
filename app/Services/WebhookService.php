@@ -52,7 +52,7 @@ class WebhookService
         $subscription = $request['subscription'];
         $type = $request['notification_type'];
         $subscriptionPlan = SubscriptionPlan::where('external_id', $subscription['plan_id'])->first();
-        $newUser = SubscriptionUser::where('user_id', $user['id'])->where('status', 'new')->first();
+        $newUser = SubscriptionUser::where('user_id', $user['id'])->where('status', 'active')->first();
         Log::info("newUser", ['newUser' => $newUser, 'subscriptionPlan' => $subscriptionPlan]);
 
         $newUser->update([
