@@ -106,6 +106,7 @@ class XsollaService
 
     public function getRedirectUrl ($token)
     {
+        Log::info("token", ['token' => $token]);
         return $this->client->getRedirectUrl($token);
     }
 }
