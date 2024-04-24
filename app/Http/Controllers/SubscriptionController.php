@@ -28,7 +28,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function redirect (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlan $subscriptionPlan)
+    public function redirect (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
     {
         $planId = $request->input('plan_id');
         $user = auth()->user();
@@ -38,7 +38,7 @@ class SubscriptionController extends Controller
         $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user);
 
         // retrieve selected subscription plan
-        $plan = $subscriptionPlan->getSubscriptionPlan($planId);
+        $plan = $subscriptionPlanService->getSubscriptionPlan($planId);
 
 
         if ($activeSubscription) {
@@ -66,12 +66,12 @@ class SubscriptionController extends Controller
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
 
-    public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlan, User $user)
+    public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService, User $user)
     {   
         $userSub = $subscriptionService->getActiveSubscriptionUser($user);
         
         Log::info("callback received", $request->all());
-        $plan = $subscriptionPlan->getSubscriptionPlan($userSub->subscription_plan_id);
+        $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);
 
         if ($request->input('status') == 'done') {
             $data = [
