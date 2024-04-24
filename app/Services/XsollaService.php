@@ -72,7 +72,7 @@ class XsollaService
 
     public function getPlans () 
     {
-        return $this->client->getPlans($this->PLANS_LIMIT);
+        return $this->client->getPlans(self::PLANS_LIMIT);
     }
 
     public function cancelSubscription ($user_id, $subscription_id, $status)
