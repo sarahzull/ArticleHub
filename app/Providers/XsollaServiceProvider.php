@@ -18,8 +18,7 @@ class XsollaServiceProvider extends ServiceProvider
             return new XsollaService(
                 $app->make(XsollaClient::class), 
                 config('services.xsolla.project_id'), 
-                config('app.url'),
-                config('constants.plans.limit')
+                config('app.url')
             );
         });
     }

@@ -17,16 +17,14 @@ class XsollaClient
   private string $apiMerchantKey;
   private string $apiBaseUrl;
   private string $ps4BaseUrl;
-  private int $plansLimit;
 
-  public function __construct(int $merchantId, int $projectId, string $apiMerchantKey, string $apiBaseUrl, string $ps4BaseUrl, int $plansLimit)
+  public function __construct(int $merchantId, int $projectId, string $apiMerchantKey, string $apiBaseUrl, string $ps4BaseUrl)
   {
     $this->merchantId = $merchantId;
     $this->projectId = $projectId;
     $this->apiMerchantKey = $apiMerchantKey;
     $this->apiBaseUrl = $apiBaseUrl;
     $this->ps4BaseUrl = $ps4BaseUrl;
-    $this->plansLimit =  $plansLimit;
   }
   
   public function createToken(array $payload): \Illuminate\Http\Client\Response
