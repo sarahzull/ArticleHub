@@ -62,7 +62,9 @@ class SubscriptionController extends Controller
         $newSubscription = $subscriptionService->createSubscription($user, $plan, $subscriptionData);
         
         $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
+        Log::info("token", ["token" => $token]);
         $redirectUrl = $xsollaService->getRedirectUrl($token);
+        Log::info("redirectUrl", ["redirectUrl" => $redirectUrl]);
         
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
