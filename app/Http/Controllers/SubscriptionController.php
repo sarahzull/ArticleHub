@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
+use App\Services\SubscriptionService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -26,21 +27,18 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function redirect (Request $request, XsollaService $xsollaService)
+    public function redirect (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService)
     {
         $plan_id = $request->input('plan_id');
         $user = auth()->user();
         $items = [];
 
         // find active subscription user
-        $activeSubscription = SubscriptionUser::where('user_id', $user->id)
-        ->where('status', 'active')
-        ->first();
+        $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user);
 
         // retrieve selected subscription plan
-        $plan = SubscriptionPlan::with('permission')
-        ->where('plan_id', $plan_id)
-        ->first();
+        $plan = $subscriptionService->getSubscriptionPlan($plan_id);
+
 
         if ($activeSubscription) {
             $items = [
@@ -49,25 +47,22 @@ class SubscriptionController extends Controller
             $user->revokePermissionTo($plan->permission->name);
     
             // cancel current active subscription
-            $activeSubscription->update([
-                // 'subscription_id' => null,
+            $updateSubscription = [
                 'status' => 'canceled',
                 'end_date' => now(),
-            ]);
+            ];
+            $subscriptionService->updateSubscription($activeSubscription, $updateSubscription);
         }
 
         // create new subscription for user
-        $newSubscription = SubscriptionUser::create([
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
+        $subscriptionData = [
             'start_date' => now(),
-            'end_date' => now()->addDays(30),
             'status' => 'new',
-        ]);
+        ];
+        $newSubscription = $subscriptionService->createSubscription($user, $plan, $subscriptionData);
         
         $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
-
-        $redirectUrl = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
+        $redirectUrl = $xsollaService->getRedirectUrl($token);
         
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
