@@ -15,12 +15,14 @@ class XsollaService
     private ?XsollaClient $client = null;
     private ?int $projectId = null;
     private ?string $appUrl = null;
+    private ?string $plansLimit = null;
 
-    public function __construct(XsollaClient $client, int $projectId, string $appUrl)
+    public function __construct(XsollaClient $client, int $projectId, string $appUrl, int $plansLimit)
     {
         $this->client = $client;
         $this->projectId = $projectId;
         $this->appUrl = $appUrl;
+        $this->plansLimit = $plansLimit;
     }
 
     public function createUserToken($user, $plan, $items, $userSubId)
@@ -68,9 +70,9 @@ class XsollaService
         return $this->client->createToken($payload)->json();
     }
 
-    public function getPlans (int $limit) 
+    public function getPlans () 
     {
-        return $this->client->getPlans($limit);
+        return $this->client->getPlans($this->plansLimit);
     }
 
     public function cancelSubscription ($user_id, $subscription_id, $status)

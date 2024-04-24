@@ -20,7 +20,7 @@ class SubscriptionController extends Controller
 {
     public function index (XsollaService $xsollaService) 
     {
-        $plans = $xsollaService->getPlans(10);
+        $plans = $xsollaService->getPlans();
 
         return Inertia::render('SubscriptionPlan/Index', [
             'plans' => $plans

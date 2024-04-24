@@ -17,14 +17,16 @@ class XsollaClient
   private string $apiMerchantKey;
   private string $apiBaseUrl;
   private string $ps4BaseUrl;
+  private int $plansLimit;
 
-  public function __construct(int $merchantId, int $projectId, string $apiMerchantKey, string $apiBaseUrl, string $ps4BaseUrl)
+  public function __construct(int $merchantId, int $projectId, string $apiMerchantKey, string $apiBaseUrl, string $ps4BaseUrl, int $plansLimit)
   {
     $this->merchantId = $merchantId;
     $this->projectId = $projectId;
     $this->apiMerchantKey = $apiMerchantKey;
     $this->apiBaseUrl = $apiBaseUrl;
     $this->ps4BaseUrl = $ps4BaseUrl;
+    $this->plansLimit =  $plansLimit;
   }
   
   public function createToken(array $payload): \Illuminate\Http\Client\Response
@@ -36,12 +38,12 @@ class XsollaClient
                         ->post($apiUrl, $payload);
   }
 
-  public function getPlans(int $limit): array
+  public function getPlans(): array
   {
     $apiUrl = $this->apiBaseUrl . "projects/" . $this->projectId . "/subscriptions/plans";
 
     $params = [
-      'limit' => $limit ?? 10
+      'limit' => $this->plansLimit
     ];
 
     Log::info("getPlans - params", ['params' => $params]);

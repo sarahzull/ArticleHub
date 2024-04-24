@@ -19,7 +19,8 @@ class XsollaClientProvider extends ServiceProvider
                 config('services.xsolla.project_id'), 
                 config('services.xsolla.api_key'), 
                 config('services.xsolla.api_url'),
-                config('services.xsolla.ps4_base_url')
+                config('services.xsolla.ps4_base_url'),
+                config('constants.plans.limit')
             );
         });
     }
