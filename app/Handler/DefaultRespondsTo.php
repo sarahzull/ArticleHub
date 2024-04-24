@@ -20,7 +20,7 @@ class DefaultRespondsTo implements RespondsToWebhook
             case 'user_validation':
                 return WebhookService::userValidation($request);
 
-            case 'created_subscription':
+            case 'create_subscription':
                 return response()->json(['message' => 'ok']);
 
             case 'canceled_subscription':
