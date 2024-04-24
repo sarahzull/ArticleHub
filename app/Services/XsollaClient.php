@@ -36,12 +36,12 @@ class XsollaClient
                         ->post($apiUrl, $payload);
   }
 
-  public function getPlans(): array
+  public function getPlans($limit): array
   {
     $apiUrl = $this->apiBaseUrl . "projects/" . $this->projectId . "/subscriptions/plans";
 
     $params = [
-      'limit' => $this->plansLimit
+      'limit' => $limit
     ];
 
     Log::info("getPlans - params", ['params' => $params]);
