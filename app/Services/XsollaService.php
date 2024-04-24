@@ -106,6 +106,6 @@ class XsollaService
 
     public function getRedirectUrl ($token)
     {
-        return $this->client->getRedirectUrl($token['token']);
+        return $this->client->getRedirectUrl($token);
     }
 }
