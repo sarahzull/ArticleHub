@@ -29,6 +29,9 @@ class DefaultRespondsTo implements RespondsToWebhook
             case 'payment':
                 return response()->json(['message' => 'ok']);
 
+            case 'non_renewal_subscription':
+                return response()->json(['message' => 'ok']);
+
             default:
                 return response()->json([
                     'error' => [
