@@ -74,7 +74,7 @@ class XsollaClient
 
   public function getRedirectUrl(string $token): string
   {
-    return $this->ps4BaseUrl . "?token=" . $token['token']['token'];
+    return $this->ps4BaseUrl . "?token=" . $token;
   }
 
 }
