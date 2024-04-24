@@ -38,6 +38,7 @@ return [
         'api_key' => env('XSOLLA_API_KEY'),
         'merchant_api_key' => env('XSOLLA_MERCHANT_API_KEY'),
         'api_subs_url' => env('XSOLLA_API_SUBS_URL'),
+        'ps4_base_url' => env('XSOLLA_PS4_BASE_URL'),
     ],
 
 ];

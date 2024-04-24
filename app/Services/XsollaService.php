@@ -101,4 +101,9 @@ class XsollaService
 
         return $this->client->getSubscriptionByUserId($params);
     }
+
+    public function getRedirectUrl ($token)
+    {
+        return $this->client->getRedirectUrl($token);
+    }
 }
