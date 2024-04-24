@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
+use App\Services\SubscriptionPlanService;
 use App\Services\SubscriptionService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -59,32 +60,28 @@ class SubscriptionController extends Controller
         $newSubscription = $subscriptionService->createSubscription($user, $plan, $subscriptionData);
         
         $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
-        Log::info("token", ["token" => $token]);
         $tokenData = $token['token'];
         $redirectUrl = $xsollaService->getRedirectUrl($tokenData);
-        Log::info("redirectUrl", ["redirectUrl" => $redirectUrl]);
         
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
 
-    public function callback (Request $request)
+    public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlan, User $user)
     {   
-        $subs = SubscriptionUser::where('id', $request->input('user_sub_id'))
-        ->where('status', 'new')
-        ->first();
-        Log::info("callback received", $request->all());
+        $userSub = $subscriptionService->getActiveSubscriptionUser($user);
         
-        $user = User::find($request->input('user_id'));
-        $plan = SubscriptionPlan::with('permission')->where('id', $subs->subscription_plan_id)->first();
+        Log::info("callback received", $request->all());
+        $plan = $subscriptionPlan->getSubscriptionPlan($userSub->subscription_plan_id);
 
         if ($request->input('status') == 'done') {
-            $subs->update([
+            $data = [
                 'status' => 'active',
                 'invoice_id' => $request->input('invoice_id'),
-            ]);
-            $user->givePermissionTo($plan->permission->name);
+            ];
+            $newSubscription = $subscriptionService->updateSubscription($userSub, $data);
+            $newSubscription->givePermissionTo($plan->permission->name);
         }
 
-        return redirect()->route('dashboard', ['status' => $subs->status]);
+        return redirect()->route('dashboard', ['status' => $userSub->status]);
     }
 }
