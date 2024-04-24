@@ -27,9 +27,9 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function redirect (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService)
+    public function redirect (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlan $subscriptionPlan)
     {
-        $plan_id = $request->input('plan_id');
+        $planId = $request->input('plan_id');
         $user = auth()->user();
         $items = [];
 
@@ -37,7 +37,7 @@ class SubscriptionController extends Controller
         $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user);
 
         // retrieve selected subscription plan
-        $plan = $subscriptionService->getSubscriptionPlan($plan_id);
+        $plan = $subscriptionPlan->getSubscriptionPlan($planId);
 
 
         if ($activeSubscription) {
@@ -47,11 +47,8 @@ class SubscriptionController extends Controller
             $user->revokePermissionTo($plan->permission->name);
     
             // cancel current active subscription
-            $updateSubscription = [
-                'status' => 'canceled',
-                'end_date' => now(),
-            ];
-            $subscriptionService->updateSubscription($activeSubscription, $updateSubscription);
+            $newStatus = 'canceled';
+            $subscriptionService->updateSubscription($activeSubscription, $newStatus);
         }
 
         // create new subscription for user
