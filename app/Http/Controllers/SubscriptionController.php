@@ -69,7 +69,7 @@ class SubscriptionController extends Controller
     public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
     {   
         $userSub = $subscriptionService->getSubscriptionUserById($request->input('user_sub_id'));
-        
+        $user = User::find($userSub->user_id);
         Log::info("callback received", $request->all());
         Log::info("userSub", ['userSub' => $userSub]);
         $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);
@@ -79,8 +79,8 @@ class SubscriptionController extends Controller
                 'status' => 'active',
                 'invoice_id' => $request->input('invoice_id'),
             ];
-            $newSubscription = $subscriptionService->updateSubscription($userSub, $data);
-            $newSubscription->givePermissionTo($plan->permission->name);
+            $subscriptionService->updateSubscription($userSub, $data);
+            $user->givePermissionTo($plan->permission->name);
         }
 
         return redirect()->route('dashboard', ['status' => $userSub->status]);
