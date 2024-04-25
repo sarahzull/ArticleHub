@@ -88,7 +88,7 @@ class XsollaService
         ];
 
         $response = $this->client->cancelSubscription($user_id, $subscription_id, $payload);
-        Log::info("cancelSubscription", ['response' => $response]);
+        Log::info("updateSubscription", ['response' => $response]);
 
         return $response;
     }
