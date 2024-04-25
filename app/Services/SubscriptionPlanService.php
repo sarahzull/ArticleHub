@@ -17,4 +17,9 @@ class SubscriptionPlanService
         ->where('plan_id', $plan_id)
         ->first();
   }
+
+  public function getByExternalId($external_id)
+  {
+    return SubscriptionPlan::where('external_id', $external_id)->first();
+  }
 }

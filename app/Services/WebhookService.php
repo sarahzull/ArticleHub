@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\Log;
+use App\Services\SubscriptionService;
+use App\Services\SubscriptionPlanService;
 
 /**
  * Class WebhookService
@@ -14,7 +16,16 @@ use Illuminate\Support\Facades\Log;
  */
 class WebhookService
 {
-    public static function userValidation ($request) 
+    private ?SubscriptionPlanService $subscriptionPlanService;
+    private ?SubscriptionService $subscriptionService;
+
+    public function __construct(SubscriptionPlanService $subscriptionPlanService, SubscriptionService $subscriptionService) 
+    {
+        $this->subscriptionPlanService = $subscriptionPlanService;
+        $this->subscriptionService = $subscriptionService;
+    }
+
+    public function userValidation ($request) 
     {
         Log::info("request - userValidation", ['request' => $request]);
         $userData = $request->input('user');
@@ -45,17 +56,19 @@ class WebhookService
         ], 400);
     }
 
-    public static function createdSubscription ($request) 
+    public function createdSubscription ($request) 
     {
         Log::info("request - createdSubscription", ['request' => $request]);
+
         $user = $request['user'];
         $subscription = $request['subscription'];
-        $type = $request['notification_type'];
-        $subscriptionPlan = SubscriptionPlan::where('external_id', $subscription['plan_id'])->first();
-        $newUser = SubscriptionUser::where('user_id', $user['id'])->where('status', 'active')->first();
-        Log::info("newUser", ['newUser' => $newUser, 'subscriptionPlan' => $subscriptionPlan]);
 
-        $newUser->update([
+        $subscriptionPlan = $this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
+        $activeUser = $this->subscriptionService->getActiveSubscriptionUser($user);
+
+        Log::info("activeUser", ['activeUser' => $activeUser, 'subscriptionPlan' => $subscriptionPlan]);
+
+        $activeUser->update([
             'subscription_id' => $subscription['subscription_id'],
             'start_date' => Carbon::parse($subscription['date_create']),
             'end_date' => Carbon::parse($subscription['date_next_charge']),
@@ -65,7 +78,7 @@ class WebhookService
         $user->givePermissionTo($subscriptionPlan->permission->name);
     }
 
-    public static function updatedSubscription($request)
+    public function updatedSubscription($request)
     {
         Log::info("request - updatedSubscription", ['request' => $request]);
         $user = $request['user'];
@@ -79,7 +92,7 @@ class WebhookService
         ]);
     }
 
-    public static function canceledSubscription ($request)
+    public function canceledSubscription ($request)
     {
         Log::info("request - cancelSubscription", ['request' => $request]);
         $user = $request['user'];
@@ -99,7 +112,7 @@ class WebhookService
         ]);
     }
 
-    public static function nonRenewalSubscription ($request)
+    public function nonRenewalSubscription ($request)
     {
         Log::info("request - nonRenewalSubscription", ['request' => $request]);
         $user = $request['user'];
@@ -119,7 +132,7 @@ class WebhookService
         ]);
     }
 
-    public static function payment ($request) 
+    public function payment ($request) 
     {
         Log::info("request - payment", ['request' => $request]);
     }

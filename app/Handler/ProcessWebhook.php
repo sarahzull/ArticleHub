@@ -13,6 +13,13 @@ use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
 
 class ProcessWebhook extends ProcessWebhookJob
 {
+    protected $webhookService;
+
+    public function __construct(WebhookService $webhookService)
+    {
+        $this->webhookService = $webhookService;
+    }
+
     public function handle()
     {
         $response = json_decode($this->webhookCall, true);
@@ -23,19 +30,19 @@ class ProcessWebhook extends ProcessWebhookJob
 
         switch ($notificationType) {
             case 'create_subscription':
-                return WebhookService::createdSubscription($data);
+                return $this->webhookService->createdSubscription($data);
 
             case 'update_subscription':
-                return WebhookService::updatedSubscription($data);
+                return $this->webhookService->updatedSubscription($data);
 
             case 'cancel_subscription':
-                return WebhookService::canceledSubscription($data);
+                return $this->webhookService->canceledSubscription($data);
 
             case 'non_renewal_subscription':
-                return WebhookService::nonRenewalSubscription($data);
+                return $this->webhookService->nonRenewalSubscription($data);
 
             case 'payment':
-                return WebhookService::payment($data);
+                return $this->webhookService->payment($data);
 
             default:
                 Log::warning('Unsupported notification type received', ['notification_type' => $notificationType]);

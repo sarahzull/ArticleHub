@@ -12,13 +12,20 @@ use Spatie\WebhookClient\WebhookResponse\RespondsToWebhook;
 
 class DefaultRespondsTo implements RespondsToWebhook
 {
+    protected $webhookService;
+
+    public function __construct(WebhookService $webhookService)
+    {
+        $this->webhookService = $webhookService;
+    }
+
     public function respondToValidWebhook(Request $request, WebhookConfig $config): Response
     {
         $notificationType = $request->input('notification_type');
 
         switch ($notificationType) {
             case 'user_validation':
-                return WebhookService::userValidation($request);
+                return $this->webhookService->userValidation($request);
 
             case 'create_subscription':
                 return response()->json(['message' => 'ok']);
