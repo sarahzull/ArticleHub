@@ -71,6 +71,7 @@ class SubscriptionController extends Controller
         $userSub = $subscriptionService->getActiveSubscriptionUser($user);
         
         Log::info("callback received", $request->all());
+        Log::info("userSub", ['userSub' => $userSub]);
         $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);
 
         if ($request->input('status') == 'done') {
