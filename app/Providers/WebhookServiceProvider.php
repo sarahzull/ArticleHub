@@ -15,13 +15,14 @@ class WebhookServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(WebhookService::class, function (Application $app) {;
-            return new WebhookService(
-                $app->make(SubscriptionService::class), 
-                $app->make(SubscriptionPlanService::class),
-            );
+        $this->app->singleton(WebhookService::class, function (Application $app) {
+            $subscriptionPlanService = $app->make(SubscriptionPlanService::class);
+            $subscriptionService = $app->make(SubscriptionService::class);
+
+            return new WebhookService($subscriptionPlanService, $subscriptionService);
         });
     }
+    
 
     /**
      * Bootstrap services.
