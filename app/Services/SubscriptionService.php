@@ -56,16 +56,17 @@ class SubscriptionService
     
     //update subscription user
     public function updateSubscription($subscriptionUser, $items, $plan = null)
-  {
-      $subscriptionUser->update([
-          'status' => $items['status'],
-          'invoice_id' => $items['invoice_id'] ?? null,
-      ]);
+    {
+      
+        $subscriptionUser->update([
+            'status' => $items['status'],
+            'invoice_id' => $items['invoice_id'] ?? null,
+        ]);
 
-      if ($plan) {
-        $subscriptionUser->givePermissionTo($plan->permission->name);
-      }
+        if ($plan) {
+          $subscriptionUser->givePermissionTo($plan->permission->name);
+        }
 
-      return $subscriptionUser;
-  }
+        return $subscriptionUser;
+    }
 }

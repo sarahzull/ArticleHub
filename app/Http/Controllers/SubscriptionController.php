@@ -48,8 +48,8 @@ class SubscriptionController extends Controller
             $user->revokePermissionTo($plan->permission->name);
     
             // cancel current active subscription
-            $newStatus = 'canceled';
-            $subscriptionService->updateSubscription($activeSubscription, $newStatus);
+            $items['status'] = 'canceled';
+            $subscriptionService->updateSubscription($activeSubscription, $items, null);
         }
 
         // create new subscription for user
