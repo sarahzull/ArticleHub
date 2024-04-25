@@ -9,6 +9,7 @@ use App\Services\XsollaService;
 use App\Models\SubscriptionUser;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
@@ -81,14 +82,12 @@ class ProfileController extends Controller
         //
     }
 
-    public function cancelPlan (Request $request, XsollaService $xsollaService) 
+    public function cancelPlan (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService) 
     {
-        $user_id = auth()->user()->id;
-        $activeSubscription = SubscriptionUser::where('user_id', $user_id)
-        ->where('status', 'active')
-        ->first();
+        $user = auth()->user();
+        $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user);
 
-        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, 'canceled');
+        $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, 'canceled');
 
         if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
             $activeSubscription->update([
