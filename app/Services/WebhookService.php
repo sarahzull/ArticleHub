@@ -114,7 +114,7 @@ class WebhookService
             ->where('status', 'non_renewing')
             ->update([
             'status' => 'non_renewing',
-            'end_date' => Carbon::parse($subscription['date_end']),
+            'end_date' => Carbon::parse($subscription['date_next_charge']),
             'updated_at' => now(),
         ]);
     }
@@ -122,12 +122,5 @@ class WebhookService
     public static function payment ($request) 
     {
         Log::info("request - payment", ['request' => $request]);
-        // $user = $request->input('user');
-        // $subscription = $request->input('subscription');
-
-        // SubscriptionUser::where('user_id', $user['id'])->update([
-        //     'subscription_id' => $subscription['subscription_id'],
-        //     'status' => 'active',
-        // ]);
     }
 }
