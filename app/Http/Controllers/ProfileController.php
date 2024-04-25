@@ -86,7 +86,6 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $activeSubscription = $subscriptionService->getNonRenewSubscriptionUser($user);
-        Log::info("activeSubscription", ['activeSubscription' => $activeSubscription]);
 
         $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, 'canceled');
 

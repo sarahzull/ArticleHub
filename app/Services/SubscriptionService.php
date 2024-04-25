@@ -54,7 +54,6 @@ class SubscriptionService
       ]);
     }
     
-
     //update subscription user
     public function updateSubscription($subscriptionUser, $items, $plan = null)
   {
