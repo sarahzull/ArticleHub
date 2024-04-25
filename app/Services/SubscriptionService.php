@@ -27,6 +27,14 @@ class SubscriptionService
           ->first();
     }
 
+    //get non renew subscription
+    public function getNonRenewSubscriptionUser($user)
+    {
+      return SubscriptionUser::where('user_id', $user->id)
+          ->where('status', 'non_renewing')
+          ->first();
+    }
+
     //get by id
     public function getSubscriptionUserById($id)
     {
