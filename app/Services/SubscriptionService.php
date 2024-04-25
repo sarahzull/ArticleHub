@@ -12,25 +12,25 @@ use App\Models\SubscriptionUser;
 class SubscriptionService
 {
     //get active subscription
-    public function getActiveSubscriptionUser($user)
+    public function getActiveSubscriptionUser($user_id)
     {
-      return SubscriptionUser::where('user_id', $user->id)
+      return SubscriptionUser::where('user_id', $user_id)
           ->where('status', 'active')
           ->first();
     }
 
     //get new subscription
-    public function getNewSubscriptionUser($user)
+    public function getNewSubscriptionUser($user_id)
     {
-      return SubscriptionUser::where('user_id', $user->id)
+      return SubscriptionUser::where('user_id', $user_id)
           ->where('status', 'new')
           ->first();
     }
 
     //get non renew subscription
-    public function getNonRenewSubscriptionUser($user)
+    public function getNonRenewSubscriptionUser($user_id)
     {
-      return SubscriptionUser::where('user_id', $user->id)
+      return SubscriptionUser::where('user_id', $user_id)
           ->where('status', 'non_renewing')
           ->first();
     }

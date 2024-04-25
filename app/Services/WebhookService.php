@@ -64,7 +64,7 @@ class WebhookService
         $subscription = $request['subscription'];
 
         $subscriptionPlan = $this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
-        $activeUser = $this->subscriptionService->getActiveSubscriptionUser($user);
+        $activeUser = $this->subscriptionService->getActiveSubscriptionUser($user['id']);
 
         Log::info("activeUser", ['activeUser' => $activeUser, 'subscriptionPlan' => $subscriptionPlan]);
 

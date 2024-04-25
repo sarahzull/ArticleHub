@@ -35,7 +35,7 @@ class SubscriptionController extends Controller
         $items = [];
 
         // find active subscription user
-        $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user);
+        $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user->id);
 
         // retrieve selected subscription plan
         $plan = $subscriptionPlanService->getSubscriptionPlan($planId);
