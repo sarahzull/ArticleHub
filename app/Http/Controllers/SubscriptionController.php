@@ -66,9 +66,9 @@ class SubscriptionController extends Controller
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
 
-    public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService, User $user)
+    public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
     {   
-        $userSub = $subscriptionService->getNewSubscriptionUser($user);
+        $userSub = $subscriptionService->getSubscriptionUserById($request->input('user_sub_id'));
         
         Log::info("callback received", $request->all());
         Log::info("userSub", ['userSub' => $userSub]);

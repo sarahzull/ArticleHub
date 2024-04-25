@@ -27,6 +27,12 @@ class SubscriptionService
           ->first();
     }
 
+    //get by id
+    public function getSubscriptionUserById($id)
+    {
+      return SubscriptionUser::find($id);
+    }
+
     // create new subscription for user
     public function createSubscription($user, $plan, $items)
     {
