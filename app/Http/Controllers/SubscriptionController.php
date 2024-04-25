@@ -68,7 +68,7 @@ class SubscriptionController extends Controller
 
     public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService, User $user)
     {   
-        $userSub = $subscriptionService->getActiveSubscriptionUser($user);
+        $userSub = $subscriptionService->getNewSubscriptionUser($user);
         
         Log::info("callback received", $request->all());
         Log::info("userSub", ['userSub' => $userSub]);

@@ -19,6 +19,14 @@ class SubscriptionService
           ->first();
     }
 
+    //get new subscription
+    public function getNewSubscriptionUser($user)
+    {
+      return SubscriptionUser::where('user_id', $user->id)
+          ->where('status', 'new')
+          ->first();
+    }
+
     // create new subscription for user
     public function createSubscription($user, $plan, $items)
     {
