@@ -47,8 +47,6 @@ class SubscriptionService
       return SubscriptionUser::create([
           'user_id' => $user->id,
           'subscription_plan_id' => $plan->id,
-          'start_date' => $items['start_date'], //can get from webhook
-          'end_date' => $items['start_date']->addDays(30), //can get from webhook
           'status' => $items['status'] ?? 'new',
           'invoice_id' => $items['invoice_id'] ?? null,
       ]);
@@ -57,7 +55,6 @@ class SubscriptionService
     //update subscription user
     public function updateSubscription($subscriptionUser, $items, $plan = null)
     {
-      
         $subscriptionUser->update([
             'status' => $items['status'],
             'invoice_id' => $items['invoice_id'] ?? null,
