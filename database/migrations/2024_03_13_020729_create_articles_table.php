@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamp('published_at')->nullable();
             $table->boolean('is_premium')->default(false);
+            $table->boolean('is_featured')->default(false);
             $table->timestamps();
         });
     }

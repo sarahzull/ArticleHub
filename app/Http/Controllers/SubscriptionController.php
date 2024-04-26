@@ -79,6 +79,8 @@ class SubscriptionController extends Controller
                 'invoice_id' => $request->input('invoice_id'),
             ];
             $subscriptionService->updateSubscription($userSub, $data, $plan);
+
+            session()->flash('success', 'Subscription has been activated!');
         }
 
         return redirect()->route('dashboard', ['status' => $userSub->status]);
