@@ -58,7 +58,13 @@ if (flash.success) {
                                 by 
                                 <span class="text-gray-500">{{ article.author.name }}</span>
                             </div>
-                            <div v-html="article.content" class="text-gray-700"></div>
+                            <div v-html="article.content" class="mb-2 text-gray-700"></div>
+
+                            <div class="mb-2">
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-600 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-500/10">{{ article.category.name }}</span>
+                                <!-- <span class="text-sm font-semibold text-gray-600">Category:</span>
+                                <span class="text-sm text-gray-500">{{ article.category.name }}</span>   -->
+                            </div>
                         </div>
                     </div>
                 </div>
