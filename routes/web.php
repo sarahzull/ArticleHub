@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
@@ -43,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('profile/cancelPlan', [ProfileController::class, 'cancelPlan'])->name('profile.cancelPlan');
     Route::post('profile/nonRenewPlan', [ProfileController::class, 'nonRenewPlan'])->name('profile.nonRenewPlan');
 
-    Route::get('/personalized', [PlanController::class, 'index'])->name('personalized.index');
+    Route::get('/personalized', [ArticleController::class, 'index'])->name('personalized.index');
 });
 
 Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans.index');
