@@ -12,7 +12,13 @@ class DashboardController extends Controller
     public function index (Request $request) 
     {
         $user = auth()->user();
-        $currentPlan = $user ? optional($user->subscription->plan)->name : 'Free';
+        $articles = [];
+
+        if ($user && $user->subscription === null) {
+            $currentPlan = 'Free';
+        } else {
+            $currentPlan = $user->subscription->plan->name;
+        }
 
         $query = Article::with('author', 'category')->latest();
 
