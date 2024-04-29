@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SubscriptionStatus;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
@@ -86,9 +87,9 @@ class ProfileController extends Controller
         $user = auth()->user();
         $activeSubscription = $subscriptionService->getNonRenewSubscriptionUser($user->id);
 
-        $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, 'canceled');
+        $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, SubscriptionStatus::Canceled());
 
-        if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
+        if ($response['status'] === SubscriptionStatus::Canceled() || $response['status'] === SubscriptionStatus::NonRenewing()) {
             $activeSubscription->update([
                 'status' => $response['status'],
                 'end_date' => now(),
@@ -104,13 +105,13 @@ class ProfileController extends Controller
     {
         $user_id = auth()->user()->id;
         $activeSubscription = SubscriptionUser::where('user_id', $user_id)
-        ->where('status', 'active')
+        ->where('status', SubscriptionStatus::Active())
         ->first();
 
-        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, 'non_renewing');
+        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, SubscriptionStatus::NonRenewing());
         Log::info("nonRenewPlan", ['response' => $response]);
 
-        if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
+        if ($response['status'] === SubscriptionStatus::Canceled() || $response['status'] === SubscriptionStatus::NonRenewing()) {
             $activeSubscription->update([
                 'status' => $response['status'],
                 'end_date' => now(),

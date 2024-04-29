@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Services\XsollaService;
 use Illuminate\Console\Command;
 use App\Models\SubscriptionUser;
+use App\Enums\SubscriptionStatus;
 
 class SyncSubscriptionStatus extends Command
 {
@@ -36,7 +37,7 @@ class SyncSubscriptionStatus extends Command
             
             if ($response == []) {
                 $subscription->update([
-                    'status' => 'canceled'
+                    'status' => SubscriptionStatus::CANCELED,
                 ]);
             } else {
                 $endDate = Carbon::parse($response[0]['date_last_charge'])->addDays(30);

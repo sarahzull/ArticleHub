@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\SubscriptionStatus;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\SubscriptionPlan;
@@ -87,7 +88,7 @@ class WebhookService
         SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
             'subscription_id' => $subscription['subscription_id'],
             'end_date' => Carbon::parse($subscription['date_next_charge']),
-            'status' => 'active',
+            'status' => SubscriptionStatus::Active(),
             'updated_at' => now(),
         ]);
     }
@@ -104,9 +105,9 @@ class WebhookService
 
         $user = SubscriptionUser::where('user_id', $user['id'])
             ->where('subscription_id', $subscription['subscription_id'])
-            ->where('status', 'active')
+            ->where('status', SubscriptionStatus::Active())
             ->update([
-            'status' => 'canceled',
+            'status' => SubscriptionStatus::Canceled(),
             'end_date' => Carbon::parse($subscription['date_next_charge']),
             'updated_at' => now(),
         ]);
@@ -124,9 +125,9 @@ class WebhookService
 
         $user = SubscriptionUser::where('user_id', $user['id'])
             ->where('subscription_id', $subscription['subscription_id'])
-            ->where('status', 'non_renewing')
+            ->where('status', SubscriptionStatus::NonRenewing())
             ->update([
-            'status' => 'non_renewing',
+            'status' => SubscriptionStatus::NonRenewing(),
             'end_date' => Carbon::parse($subscription['date_next_charge']),
             'updated_at' => now(),
         ]);

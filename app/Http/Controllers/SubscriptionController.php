@@ -9,13 +9,14 @@ use Illuminate\Http\Request;
 use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
-use App\Services\SubscriptionPlanService;
-use App\Services\SubscriptionService;
+use App\Enums\SubscriptionStatus;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\SubscriptionService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
+use App\Services\SubscriptionPlanService;
 
 class SubscriptionController extends Controller
 {
@@ -48,14 +49,14 @@ class SubscriptionController extends Controller
             $user->revokePermissionTo($plan->permission->name);
     
             // cancel current active subscription
-            $items['status'] = 'canceled';
+            $items['status'] = SubscriptionStatus::Canceled();
             $subscriptionService->updateSubscription($activeSubscription, $items, null);
         }
 
         // create new subscription for user
         $subscriptionData = [
             'start_date' => now(),
-            'status' => 'new',
+            'status' => SubscriptionStatus::New(),
         ];
         $newSubscription = $subscriptionService->createSubscription($user, $plan, $subscriptionData);
         
@@ -75,7 +76,7 @@ class SubscriptionController extends Controller
 
         if ($request->input('status') == 'done') {
             $data = [
-                'status' => 'active',
+                'status' => SubscriptionStatus::Active(),
                 'invoice_id' => $request->input('invoice_id'),
             ];
             $subscriptionService->updateSubscription($userSub, $data, $plan);

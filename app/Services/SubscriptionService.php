@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\SubscriptionStatus;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 
@@ -15,7 +16,7 @@ class SubscriptionService
     public function getActiveSubscriptionUser($user_id)
     {
       return SubscriptionUser::where('user_id', $user_id)
-          ->where('status', 'active')
+          ->where('status', SubscriptionStatus::Active())
           ->first();
     }
 
@@ -23,7 +24,7 @@ class SubscriptionService
     public function getNewSubscriptionUser($user_id)
     {
       return SubscriptionUser::where('user_id', $user_id)
-          ->where('status', 'new')
+          ->where('status', SubscriptionStatus::New())
           ->first();
     }
 
@@ -31,7 +32,7 @@ class SubscriptionService
     public function getNonRenewSubscriptionUser($user_id)
     {
       return SubscriptionUser::where('user_id', $user_id)
-          ->where('status', 'non_renewing')
+          ->where('status', SubscriptionStatus::NonRenewing())
           ->first();
     }
 
@@ -47,7 +48,7 @@ class SubscriptionService
       return SubscriptionUser::create([
           'user_id' => $user->id,
           'subscription_plan_id' => $plan->id,
-          'status' => $items['status'] ?? 'new',
+          'status' => $items['status'] ?? SubscriptionStatus::New(),
           'invoice_id' => $items['invoice_id'] ?? null,
       ]);
     }
