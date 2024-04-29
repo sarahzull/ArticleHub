@@ -50,7 +50,7 @@ class SubscriptionController extends Controller
     
             // cancel current active subscription
             $items['status'] = SubscriptionStatus::Canceled();
-            $subscriptionService->updateSubscription($activeSubscription, $items, null);
+            $subscriptionService->updateSubscription($activeSubscription, $items);
         }
 
         // create new subscription for user
