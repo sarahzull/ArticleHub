@@ -23,11 +23,10 @@ class ProfileController extends Controller
     public function edit(Request $request, XsollaService $xsollaService): Response
     {
         $user = auth()->user()->load('subscription.plan');
+        $userPlan = null;
         
         if ($user->subscription) {
             $userPlan = $user->subscription;
-        } else {
-            $userPlan = null;
         }
 
         $plans = $xsollaService->getPlans(10);
