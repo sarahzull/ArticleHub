@@ -19,11 +19,13 @@ class WebhookService
 {
     private ?SubscriptionPlanService $subscriptionPlanService;
     private ?SubscriptionService $subscriptionService;
+    private ?UserService $userService;
 
-    public function __construct(SubscriptionPlanService $subscriptionPlanService, SubscriptionService $subscriptionService) 
+    public function __construct(SubscriptionPlanService $subscriptionPlanService, SubscriptionService $subscriptionService, UserService $userService) 
     {
         $this->subscriptionPlanService = $subscriptionPlanService;
         $this->subscriptionService = $subscriptionService;
+        $this->userService = $userService;
     }
 
     public function userValidation ($request) 
@@ -32,7 +34,7 @@ class WebhookService
         $userData = $request->input('user');
 
         if (isset($userData['id'])) {
-            $exist = UserService::checkUserExists($userData['id']);
+            $exist = $this->userService->checkUserExists($userData['id']);
 
             if ($exist) {
                 return response()->json([

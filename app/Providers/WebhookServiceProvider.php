@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\UserService;
 use App\Services\WebhookService;
 use App\Services\SubscriptionService;
 use Illuminate\Support\ServiceProvider;
@@ -18,8 +19,9 @@ class WebhookServiceProvider extends ServiceProvider
         $this->app->singleton(WebhookService::class, function (Application $app) {
             $subscriptionPlanService = $app->make(SubscriptionPlanService::class);
             $subscriptionService = $app->make(SubscriptionService::class);
+            $userService = $app->make(UserService::class);
 
-            return new WebhookService($subscriptionPlanService, $subscriptionService);
+            return new WebhookService($subscriptionPlanService, $subscriptionService, $userService);
         });
     }
     
