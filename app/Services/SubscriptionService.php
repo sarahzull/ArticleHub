@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Enums\SubscriptionStatus;
+use App\Models\User;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
+use App\Enums\SubscriptionStatus;
 
 /**
  * Class SubscriptionService
@@ -43,7 +44,7 @@ class SubscriptionService
     }
 
     // create new subscription for user
-    public function createSubscription($user, $plan, $items)
+    public function createSubscription(User $user, SubscriptionPlan $plan, array $items): SubscriptionUser
     {
       return SubscriptionUser::create([
           'user_id' => $user->id,
