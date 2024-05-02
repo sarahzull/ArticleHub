@@ -56,11 +56,7 @@ class SubscriptionController extends Controller
         }
 
         // create new subscription for user
-        $subscriptionData = [
-            'start_date' => now(),
-            'status' => SubscriptionStatus::New(),
-        ];
-        $newSubscription = $subscriptionService->createSubscription($user, $plan, $subscriptionData);
+        $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionStatus::New());
         
         $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
         $tokenData = $token['token'];
