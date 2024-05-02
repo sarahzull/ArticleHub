@@ -10,6 +10,7 @@ use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 use App\Enums\SubscriptionStatus;
+use App\Http\Requests\RedirectRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -29,7 +30,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function redirect (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
+    public function redirect (RedirectRequest $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
     {
         $planId = $request->input('plan_id');
         $user = auth()->user();

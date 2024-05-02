@@ -68,16 +68,17 @@ class SubscriptionService
      *
      * @param User $user The user for whom the subscription is created.
      * @param SubscriptionPlan $plan The subscription plan.
-     * @param array $items Additional items for the subscription (e.g., status, invoice ID).
+     * @param string|null $status The status of the subscription (default: 'New').
+     * @param int|null $invoice The invoice ID associated with the subscription (optional).
      * @return SubscriptionUser The newly created subscription user.
      */
-    public function createSubscription(User $user, SubscriptionPlan $plan, array $items): SubscriptionUser
+    public function createSubscription(User $user, SubscriptionPlan $plan, $status = null, int $invoice = null): SubscriptionUser
     {
       return SubscriptionUser::create([
           'user_id' => $user->id,
           'subscription_plan_id' => $plan->id,
-          'status' => $items['status'] ?? SubscriptionStatus::New(),
-          'invoice_id' => $items['invoice_id'] ?? null,
+          'status' => $status ?? SubscriptionStatus::New(),
+          'invoice_id' => $invoice,
       ]);
     }
     
@@ -85,15 +86,16 @@ class SubscriptionService
      * Update a subscription user's details.
      *
      * @param SubscriptionUser $subscriptionUser The subscription user to update.
-     * @param array $items The updated items (e.g., status, invoice ID).
+     * @param string|null $status The status of the subscription (default: 'New').
+     * @param int|null $invoice The invoice ID associated with the subscription (optional).
      * @param SubscriptionPlan|null $plan The new subscription plan (optional).
      * @return SubscriptionUser The updated subscription user.
      */
-    public function updateSubscription(SubscriptionUser $subscriptionUser, array $items, ?SubscriptionPlan $plan = null): SubscriptionUser
+    public function updateSubscription(SubscriptionUser $subscriptionUser, $status = null, int $invoice = null, ?SubscriptionPlan $plan = null): SubscriptionUser
     {
         $subscriptionUser->update([
-            'status' => $items['status'],
-            'invoice_id' => $items['invoice_id'] ?? null,
+            'status' => $status,
+            'invoice_id' => $invoice,
         ]);
 
         if ($plan) {
