@@ -10,6 +10,7 @@ use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
 use App\Enums\SubscriptionStatus;
+use App\Http\Requests\CallbackRequest;
 use App\Http\Requests\RedirectRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -68,18 +69,19 @@ class SubscriptionController extends Controller
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
 
-    public function callback (Request $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
-    {   
+    public function callback(CallbackRequest $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
+    {
         $userSub = $subscriptionService->getSubscriptionUserById($request->input('user_sub_id'));
+
         Log::info("callback received", $request->all());
         Log::info("userSub", ['userSub' => $userSub]);
-        $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);
 
         if ($request->input('status') == 'done') {
             $data = [
                 'status' => SubscriptionStatus::Active(),
                 'invoice_id' => $request->input('invoice_id'),
             ];
+            $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);
             $subscriptionService->updateSubscription($userSub, $data, $plan);
 
             session()->flash('success', 'Subscription has been activated!');
