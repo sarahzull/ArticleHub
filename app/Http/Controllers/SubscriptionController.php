@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
-use App\Enums\SubscriptionStatus;
 use App\Http\Requests\CallbackRequest;
 use App\Http\Requests\RedirectRequest;
 use Illuminate\Support\Facades\App;
@@ -51,12 +50,12 @@ class SubscriptionController extends Controller
             $user->revokePermissionTo($plan->permission->name);
     
             // cancel current active subscription
-            $status = SubscriptionStatus::Canceled();
+            $status = SubscriptionService::CANCELED;
             $subscriptionService->updateSubscription($activeSubscription, $status);
         }
 
         // create new subscription for user
-        $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionStatus::New());
+        $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
         
         $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
         $tokenData = $token['token'];
@@ -73,7 +72,7 @@ class SubscriptionController extends Controller
         Log::info("userSub", ['userSub' => $userSub]);
 
         if ($request->input('status') == 'done') {
-            $status = SubscriptionStatus::Active();
+            $status = SubscriptionService::ACTIVE;
             $invoice_id = $request->input('invoice_id');
 
             $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);

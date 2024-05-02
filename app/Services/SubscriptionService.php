@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
-use App\Enums\SubscriptionStatus;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class SubscriptionService
@@ -13,6 +13,14 @@ use App\Enums\SubscriptionStatus;
  */
 class SubscriptionService
 {
+    /**
+     * STATUSES
+     */
+    const NEW = 'new';
+    const ACTIVE = 'active';
+    const CANCELED = 'canceled';
+    const NON_RENEWAL = 'non_renewing';
+
     /**
      * Get the active subscription for a user.
      *
@@ -22,7 +30,7 @@ class SubscriptionService
     public function getActiveSubscriptionUser(int $user_id): ?SubscriptionUser
     {
       return SubscriptionUser::where('user_id', $user_id)
-          ->where('status', SubscriptionStatus::Active())
+          ->where('status', self::ACTIVE)
           ->first();
     }
 
@@ -35,7 +43,7 @@ class SubscriptionService
     public function getNewSubscriptionUser(int $user_id): ?SubscriptionUser
     {
       return SubscriptionUser::where('user_id', $user_id)
-          ->where('status', SubscriptionStatus::New())
+          ->where('status', self::NEW)
           ->first();
     }
 
@@ -48,7 +56,7 @@ class SubscriptionService
     public function getNonRenewSubscriptionUser(int $user_id): ?SubscriptionUser
     {
       return SubscriptionUser::where('user_id', $user_id)
-          ->where('status', SubscriptionStatus::NonRenewing())
+          ->where('status', self::NON_RENEWAL)
           ->first();
     }
 
@@ -77,7 +85,7 @@ class SubscriptionService
       return SubscriptionUser::create([
           'user_id' => $user->id,
           'subscription_plan_id' => $plan->id,
-          'status' => $status ?? SubscriptionStatus::New(),
+          'status' => $status ?? self::NEW,
           'invoice_id' => $invoice,
       ]);
     }
@@ -93,15 +101,32 @@ class SubscriptionService
      */
     public function updateSubscription(SubscriptionUser $subscriptionUser, $status = null, int $invoice = null, ?SubscriptionPlan $plan = null): SubscriptionUser
     {
-        $subscriptionUser->update([
-            'status' => $status,
-            'invoice_id' => $invoice,
-        ]);
+      $subscriptionUser->update([
+          'status' => $status,
+          'invoice_id' => $invoice,
+      ]);
 
-        if ($plan) {
-          $subscriptionUser->givePermissionTo($plan->permission->name);
-        }
+      Log::debug("subscriptionUser - updateSub ", []);
 
-        return $subscriptionUser;
+      if ($plan) {
+        $subscriptionUser->givePermissionTo($plan->permission->name);
+      }
+
+      return $subscriptionUser;
+    }
+
+    public function changeSubscription(User $user, SubscriptionPlan $plan)
+    {
+      // revoke existing permission if user has an active subscription
+      $activeSubscription = $user->activeSubscription();
+      if ($activeSubscription) {
+          $user->revokePermissionTo($activeSubscription->plan->permission->name);
+          $activeSubscription->cancel();
+      }
+
+      // create a new subscription for the user
+      $newSubscription = self::createSubscription($user, $plan);
+
+      return $newSubscription;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\SubscriptionStatus;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
@@ -87,9 +86,9 @@ class ProfileController extends Controller
         $user = auth()->user();
         $activeSubscription = $subscriptionService->getNonRenewSubscriptionUser($user->id);
 
-        $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, SubscriptionStatus::Canceled());
+        $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, SubscriptionService::CANCELED);
 
-        if ($response['status'] === SubscriptionStatus::Canceled() || $response['status'] === SubscriptionStatus::NonRenewing()) {
+        if ($response['status'] === SubscriptionService::ACTIVE || $response['status'] === SubscriptionService::NON_RENEWAL) {
             $activeSubscription->update([
                 'status' => $response['status'],
                 'end_date' => now(),
@@ -105,13 +104,13 @@ class ProfileController extends Controller
     {
         $user_id = auth()->user()->id;
         $activeSubscription = SubscriptionUser::where('user_id', $user_id)
-        ->where('status', SubscriptionStatus::Active())
+        ->where('status', SubscriptionService::ACTIVE)
         ->first();
 
-        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, SubscriptionStatus::NonRenewing());
+        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, SubscriptionService::NON_RENEWAL);
         Log::info("nonRenewPlan", ['response' => $response]);
 
-        if ($response['status'] === SubscriptionStatus::Canceled() || $response['status'] === SubscriptionStatus::NonRenewing()) {
+        if ($response['status'] === SubscriptionService::CANCELED || $response['status'] === SubscriptionService::NON_RENEWAL) {
             $activeSubscription->update([
                 'status' => $response['status'],
                 'end_date' => now(),
