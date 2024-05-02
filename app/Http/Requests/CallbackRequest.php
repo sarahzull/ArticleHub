@@ -23,6 +23,7 @@ class CallbackRequest extends FormRequest
     {
         return [
             'user_sub_id' => 'required|integer',
+            'user_id' => 'required',
             'status' => 'required|string|in:done',
             'invoice_id' => 'required_if:status,done|string',
         ];

@@ -72,11 +72,14 @@ class SubscriptionController extends Controller
         Log::info("userSub", ['userSub' => $userSub]);
 
         if ($request->input('status') == 'done') {
+            Log::info("calback status done");
             $status = SubscriptionService::ACTIVE;
             $invoice_id = $request->input('invoice_id');
 
             $plan = $subscriptionPlanService->getSubscriptionPlan($userSub->subscription_plan_id);
-            $subscriptionService->updateSubscription($userSub, $status, $invoice_id, $plan);
+            $subscriptionUser = $subscriptionService->updateSubscription($userSub, $status, $invoice_id, $plan);
+
+            Log::info("update status after callback - ", $subscriptionUser);
 
             session()->flash('success', 'Subscription has been activated!');
         }
