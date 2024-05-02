@@ -36,6 +36,9 @@ class ProcessWebhook extends ProcessWebhookJob
 
             case 'payment':
                 return $webhookService->payment($data);
+            
+            case 'user_validation':
+                return $webhookService->userValidation($data);
 
             default:
                 Log::warning('Unsupported notification type received', ['notification_type' => $notificationType]);
