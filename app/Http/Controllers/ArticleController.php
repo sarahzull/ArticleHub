@@ -13,9 +13,16 @@ class ArticleController extends Controller
     public function index()
     {
         //get top authors
-        $topAuthors = User::select('users.*', DB::raw('COUNT(articles.id) as article_count'))
-        ->join('articles', 'users.id', '=', 'articles.author_id')
-        ->groupBy('users.id')
+        // $topAuthors = User::select('users.*', DB::raw('COUNT(articles.id) as article_count'))
+        // ->join('articles', 'users.id', '=', 'articles.author_id')
+        // ->groupBy('users.id')
+        // ->orderByDesc('article_count')
+        // ->limit(5)
+        // ->get();
+
+        $topAuthors = User::select('users.id', 'users.name', DB::raw('COUNT(articles.id) as article_count'))
+        ->leftJoin('articles', 'users.id', '=', 'articles.author_id')
+        ->groupBy('users.id', 'users.name')
         ->orderByDesc('article_count')
         ->limit(5)
         ->get();
@@ -24,8 +31,6 @@ class ArticleController extends Controller
         $premiumArticles = Article::with(['author', 'category'])->where('is_premium', 1)
         ->limit(10)
         ->get();
-
-        // dd($premiumArticles->toArray());
 
         return Inertia::render('Article/Index', [
             'topAuthors' => $topAuthors,
