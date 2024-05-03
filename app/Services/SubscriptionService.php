@@ -108,7 +108,8 @@ class SubscriptionService
       ]);
 
       if ($plan) {
-        $subscriptionUser->givePermissionTo($plan->permission->name);
+        $user = $subscriptionUser->user;
+        $user->givePermissionTo($plan->permission->name);
       }
 
       return $subscriptionUser;
