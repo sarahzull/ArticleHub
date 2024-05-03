@@ -86,6 +86,8 @@ class WebhookService
         $subscription = $request['subscription'];
         Log::info("subscription - updatedSubscription", ['subscription' => $subscription]);
 
+        $subscriptionPlan =$this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
+
         SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
             'subscription_id' => $subscription['subscription_id'],
             'end_date' => Carbon::parse($subscription['date_next_charge']),

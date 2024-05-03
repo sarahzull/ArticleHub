@@ -66,8 +66,8 @@ class SubscriptionController extends Controller
     {
         $userSub = $subscriptionService->getSubscriptionUserById($request->input('user_sub_id'));
 
-        // Log::info("callback received", $request->all());
-        // Log::info("userSub", ['userSub' => $userSub]);
+        Log::info("callback received", $request->all());
+        Log::info("userSub", ['userSub' => $userSub]);
 
         if ($request->input('status') == 'done') {
             $status = SubscriptionService::ACTIVE;
@@ -78,7 +78,7 @@ class SubscriptionController extends Controller
 
             Log::info("update status after callback - ", ['subscriptionUser' => $subscriptionUser]);
 
-            session()->flash('success', 'Subscription has been activated!');
+            return redirect()->route('dashboard', ['status' => $userSub->status])->with('success', 'Subscription has been activated!');
         }
 
         return redirect()->route('dashboard', ['status' => $userSub->status]);
