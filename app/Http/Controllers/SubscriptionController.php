@@ -35,11 +35,9 @@ class SubscriptionController extends Controller
         $planId = $request->input('plan_id');
         $user = auth()->user();
         $items = [];
+        $userSubscriptionId = null; 
 
-        // find active subscription user
         $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user->id);
-
-        // retrieve selected subscription plan
         $plan = $subscriptionPlanService->getSubscriptionPlan($planId);
 
         if ($activeSubscription) {
@@ -47,16 +45,17 @@ class SubscriptionController extends Controller
                 "change_plan" => true,
             ];
             $user->revokePermissionTo($plan->permission->name);
+            $userSubscriptionId = $activeSubscription->id;
     
-            // cancel current active subscription
-            $status = SubscriptionService::CANCELED;
-            $subscriptionService->updateSubscription($activeSubscription, $status);
+            // // cancel current active subscription
+            // $status = SubscriptionService::CANCELED;
+            // $subscriptionService->updateSubscription($activeSubscription, $status);
+        } else {
+            $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
+            $userSubscriptionId = $newSubscription->id;
         }
-
-        // create new subscription for user
-        $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
         
-        $token = $xsollaService->createUserToken($user, $plan, $items, $newSubscription->id);
+        $token = $xsollaService->createUserToken($user, $plan, $items, $userSubscriptionId);
         $tokenData = $token['token'];
         $redirectUrl = $xsollaService->getRedirectUrl($tokenData);
         
@@ -67,11 +66,10 @@ class SubscriptionController extends Controller
     {
         $userSub = $subscriptionService->getSubscriptionUserById($request->input('user_sub_id'));
 
-        Log::info("callback received", $request->all());
-        Log::info("userSub", ['userSub' => $userSub]);
+        // Log::info("callback received", $request->all());
+        // Log::info("userSub", ['userSub' => $userSub]);
 
         if ($request->input('status') == 'done') {
-            Log::info("calback status done");
             $status = SubscriptionService::ACTIVE;
             $invoice_id = $request->input('invoice_id');
 

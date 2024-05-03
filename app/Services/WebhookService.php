@@ -29,7 +29,7 @@ class WebhookService
 
     public function userValidation ($request) 
     {
-        Log::info("request - userValidation", ['request' => $request]);
+        // Log::info("request - userValidation", ['request' => $request]);
         $userData = $request->input('user');
 
         if (isset($userData['id'])) {
@@ -85,6 +85,7 @@ class WebhookService
         Log::info("request - updatedSubscription", ['request' => $request]);
         $user = $request['user'];
         $subscription = $request['subscription'];
+        Log::info("subscription - updatedSubscription", ['subscription' => $subscription]);
 
         SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
             'subscription_id' => $subscription['subscription_id'],
