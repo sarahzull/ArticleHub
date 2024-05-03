@@ -40,16 +40,14 @@ class SubscriptionController extends Controller
         $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user->id);
         $plan = $subscriptionPlanService->getSubscriptionPlan($planId);
 
+        Log::info("activeSubscription", ['activeSubscription' => $activeSubscription]);
+
         if ($activeSubscription) {
             $items = [
                 "change_plan" => true,
             ];
             $user->revokePermissionTo($plan->permission->name);
             $userSubscriptionId = $activeSubscription->id;
-    
-            // // cancel current active subscription
-            // $status = SubscriptionService::CANCELED;
-            // $subscriptionService->updateSubscription($activeSubscription, $status);
         } else {
             $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
             $userSubscriptionId = $newSubscription->id;
