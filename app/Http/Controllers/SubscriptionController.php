@@ -42,7 +42,6 @@ class SubscriptionController extends Controller
         // retrieve selected subscription plan
         $plan = $subscriptionPlanService->getSubscriptionPlan($planId);
 
-
         if ($activeSubscription) {
             $items = [
                 "change_plan" => true,

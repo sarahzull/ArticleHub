@@ -101,12 +101,18 @@ class SubscriptionService
      */
     public function updateSubscription(SubscriptionUser $subscriptionUser, $status = null, int $invoice = null, ?SubscriptionPlan $plan = null): SubscriptionUser
     {
-      $subscriptionUser->update([
+      if ($status == SubscriptionService::CANCELED) {
+        $subscriptionUser->update([
+          'subscription_id' => null,
+          'status' => $status,
+          'invoice_id' => null,
+      ]);
+      } else {
+        $subscriptionUser->update([
           'status' => $status,
           'invoice_id' => $invoice,
-      ]);
-
-      Log::debug("subscriptionUser - updateSub ", []);
+        ]);
+      }
 
       if ($plan) {
         $subscriptionUser->givePermissionTo($plan->permission->name);
