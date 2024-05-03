@@ -127,7 +127,7 @@ class WebhookService
     
             $userModel->revokePermissionTo($plan->permission->name);
     
-            $subscriptionPlan = $this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
+            $subscriptionPlan = $this->subscriptionPlanService->getSubscriptionByExternalId($subscription['plan_id']);
     
             $updatedSubscriptionUser = SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
                 'subscription_plan_id' => $subscriptionPlan->id,
@@ -153,7 +153,7 @@ class WebhookService
         Log::info("request - cancelSubscription", ['request' => $request]);
         $user = $request['user'];
         $subscription = $request['subscription'];
-        $plan = SubscriptionPlan::with('permission')->where('external_id', $subscription['plan_id'])->first();
+        $plan = $this->subscriptionPlanService->getSubscriptionByExternalId($subscription['plan_id']);
         
         $user = User::find($user['id']);
         $user->revokePermissionTo($plan->permission->name);
@@ -173,10 +173,10 @@ class WebhookService
         Log::info("request - nonRenewalSubscription", ['request' => $request]);
         $user = $request['user'];
         $subscription = $request['subscription'];
-        $plan = SubscriptionPlan::with('permission')->where('external_id', $subscription['plan_id'])->first();
+        // $plan = SubscriptionPlan::with('permission')->where('external_id', $subscription['plan_id'])->first();
         
-        $user = User::find($user['id']);
-        $user->revokePermissionTo($plan->permission->name);
+        // $user = User::find($user['id']);
+        // $user->revokePermissionTo($plan->permission->name);
 
         $user = SubscriptionUser::where('user_id', $user['id'])
             ->where('subscription_id', $subscription['subscription_id'])
