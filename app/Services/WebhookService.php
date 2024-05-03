@@ -29,13 +29,12 @@ class WebhookService
 
     public function userValidation ($request) 
     {
-        // Log::info("request - userValidation", ['request' => $request]);
-        $userData = $request->input('user');
+        $userData = $request['user'];
 
         if (isset($userData['id'])) {
-            $exist = $this->userService->checkUserExists($userData['id']);
-
-            if ($exist) {
+            $userExists = $this->userService->checkUserExists($userData['id']);
+    
+            if ($userExists) {
                 return response()->json([
                     'code' => "VALID_USER",
                     'message' => 'Valid user'
@@ -48,14 +47,14 @@ class WebhookService
                     ]
                 ], 400);
             }
+        } else {
+            return response()->json([
+                'error' => [
+                    'code' => "INVALID_PARAMETER",
+                    'message' => 'Invalid parameter'
+                ]
+            ], 400);
         }
-
-        return response()->json([
-            'error' => [
-                'code' => "INVALID_PARAMETER",
-                'message' => 'Invalid parameter'
-            ]
-        ], 400);
     }
 
     public function createdSubscription ($request) 
