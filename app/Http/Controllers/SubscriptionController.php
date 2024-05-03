@@ -38,7 +38,7 @@ class SubscriptionController extends Controller
         $userSubscriptionId = null; 
 
         $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user->id);
-        $plan = $subscriptionPlanService->getSubscriptionPlan($planId);
+        $plan = $subscriptionPlanService->getSubscriptionbyPlanId($planId);
 
         Log::info("activeSubscription", ['activeSubscription' => $activeSubscription]);
 
