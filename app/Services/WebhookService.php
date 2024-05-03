@@ -117,7 +117,7 @@ class WebhookService
                 return;
             }
     
-            $plan = $this->subscriptionPlanService->getSubscriptionPlan($activeUser->subscription_plan_id);
+            $plan = $this->subscriptionPlanService->getSubscriptionbyId((int) $activeUser->subscription_plan_id);
             $userModel = User::find($user['id']);
 
             if (!$userModel) {
