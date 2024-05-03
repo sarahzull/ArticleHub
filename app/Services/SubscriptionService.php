@@ -31,6 +31,7 @@ class SubscriptionService
     {
       return SubscriptionUser::where('user_id', $user_id)
           ->where('status', self::ACTIVE)
+          ->with('plan.permission')
           ->first();
     }
 
