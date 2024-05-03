@@ -30,6 +30,9 @@ class DefaultRespondsTo implements RespondsToWebhook
             case 'create_subscription':
                 return response()->json(['message' => 'ok']);
 
+            case 'update_subscription':
+                return response()->json(['message' => 'ok']);
+
             case 'canceled_subscription':
                 return response()->json(['message' => 'ok']);
 
