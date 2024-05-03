@@ -31,6 +31,8 @@ class SubscriptionPlanService
    */
   public function getByExternalId(string $external_id): ?SubscriptionPlan
   {
-      return SubscriptionPlan::where('external_id', $external_id)->first();
+      return SubscriptionPlan::with('permission')
+          ->where('external_id', $external_id)
+          ->first();
   }
 }

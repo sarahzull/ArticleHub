@@ -81,19 +81,71 @@ class WebhookService
 
     public function updatedSubscription($request)
     {
-        Log::info("request - updatedSubscription", ['request' => $request]);
-        $user = $request['user'];
-        $subscription = $request['subscription'];
-        Log::info("subscription - updatedSubscription", ['subscription' => $subscription]);
+        // Log::info("request - updatedSubscription", ['request' => $request]);
+        // $user = $request['user'];
+        // $subscription = $request['subscription'];
+        // Log::info("subscription - updatedSubscription", ['subscription' => $subscription]);
 
-        $subscriptionPlan =$this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
+        // $activeUser = $this->subscriptionService->getActiveSubscriptionUser($user['id']);
+        // $plan = $this->subscriptionPlanService->getSubscriptionPlan($activeUser->subscription_plan_id);
+        // $user = User::find($user['id']);
+        // $user->revokePermissionTo($plan->permission->name);
+        // $subscriptionPlan = $this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
 
-        SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
-            'subscription_id' => $subscription['subscription_id'],
-            'end_date' => Carbon::parse($subscription['date_next_charge']),
-            'status' => SubscriptionService::ACTIVE,
-            'updated_at' => now(),
-        ]);
+        // $updatedSubscriptionUser = SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
+        //     'subscription_id' => $subscription['subscription_id'],
+        //     'subscription_plan_id' => $subscriptionPlan->id,
+        //     'end_date' => Carbon::parse($subscription['date_next_charge']),
+        //     'status' => SubscriptionService::ACTIVE,
+        //     'updated_at' => now(),
+        // ]);
+
+        // $user->givePermissionTo($subscriptionPlan->permission->name);
+
+        try {
+            Log::info("request - updatedSubscription", ['request' => $request]);
+    
+            $user = $request['user'];
+            $subscription = $request['subscription'];
+    
+            Log::info("subscription - updatedSubscription", ['subscription' => $subscription]);
+    
+            $activeUser = $this->subscriptionService->getActiveSubscriptionUser($user['id']);
+            
+            if (!$activeUser) {
+                Log::error('No active subscription found for user ID: ' . $user['id']);
+                return;
+            }
+    
+            $plan = $this->subscriptionPlanService->getSubscriptionPlan($activeUser->subscription_plan_id);
+            $userModel = User::find($user['id']);
+
+            if (!$userModel) {
+                Log::error('User not found for ID: ' . $user['id']);
+                return;
+            }
+    
+            $userModel->revokePermissionTo($plan->permission->name);
+    
+            $subscriptionPlan = $this->subscriptionPlanService->getByExternalId($subscription['plan_id']);
+    
+            $updatedSubscriptionUser = SubscriptionUser::where('subscription_id', $subscription['subscription_id'])->update([
+                'subscription_plan_id' => $subscriptionPlan->id,
+                'end_date' => Carbon::parse($subscription['date_next_charge']),
+                'status' => SubscriptionService::ACTIVE,
+                'updated_at' => now(),
+            ]);
+    
+            if ($updatedSubscriptionUser === false) {
+                Log::error('Failed to update SubscriptionUser for subscription ID: ' . $subscription['subscription_id']);
+                return;
+            }
+    
+            $userModel->givePermissionTo($subscriptionPlan->permission->name);
+    
+        } catch (\Exception $e) {
+            Log::error('Error in updatedSubscription method: ' . $e->getMessage());
+        }
     }
 
     public function canceledSubscription ($request)
