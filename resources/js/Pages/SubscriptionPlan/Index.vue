@@ -22,7 +22,7 @@ const redirectToPlan = (externalId, planId) => {
           <h2 class="text-xl font-semibold leading-tight text-gray-800">Subscription Plans</h2>
       </template> -->
 
-      <main class="max-w-6xl px-8 pt-10 mx-auto lg:pb-0 sm:pb-20">
+      <main class="max-w-6xl px-8 pt-10 mx-auto lg:pb-6 sm:pb-20">
         <div class="max-w-md mx-auto text-center mb-14">
           <h1 class="mb-6 text-4xl font-semibold lg:text-5xl"><span class="text-indigo-600">Subscription</span> Plans</h1>
           <p class="text-xl font-medium text-gray-500">Choose a plan that works best for you!</p>
@@ -35,7 +35,7 @@ const redirectToPlan = (externalId, planId) => {
               <div class="ml-5">
                 <span class="block text-2xl font-semibold">{{ plans[0].name.en ?? '' }}</span>
                 <span>
-                  <span class="text-xl font-medium text-gray-500 align-top">$&thinsp;</span><span class="text-3xl font-bold">
+                  <span class="text-xl font-medium text-gray-500 align-top">RM&thinsp;</span><span class="text-3xl font-bold">
                     {{ plans[0].charge.prices[0].amount ?? ''}}
                   </span></span><span class="font-medium text-gray-500">/ month
                 </span>
@@ -84,7 +84,7 @@ const redirectToPlan = (externalId, planId) => {
               <div class="ml-5">
                 <span class="block text-3xl font-semibold text-white">{{ plans[1].name.en ?? '' }}</span>
                 <span>
-                  <span class="text-xl font-medium align-top">$&thinsp;</span><span class="text-3xl font-bold text-white">
+                  <span class="text-xl font-medium align-top">RM&thinsp;</span><span class="text-3xl font-bold text-white">
                     {{ plans[1].charge.prices[0].amount ?? ''}}
                   </span></span><span class="font-medium">/ month
                 </span>
@@ -138,7 +138,7 @@ const redirectToPlan = (externalId, planId) => {
               <div class="ml-5">
                 <span class="block text-2xl font-semibold">{{ plans[2].name.en ?? '' }}</span>
                 <span>
-                  <span class="text-xl font-medium text-gray-500 align-top">$&thinsp;</span><span class="text-3xl font-bold">
+                  <span class="text-xl font-medium text-gray-500 align-top">RM&thinsp;</span><span class="text-3xl font-bold">
                     {{ plans[2].charge.prices[0].amount ?? ''}}
                   </span></span><span class="font-medium text-gray-500">/ month
                 </span>
