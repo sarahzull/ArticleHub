@@ -45,7 +45,7 @@ const canAccessPro = usePage().props.can?.pro;
                                 </NavLink>
 
                                 <NavLink v-if="$page.props.auth.currentPlan === 'Basic'" :href="route('personalized.index')" :active="route().current('personalized.index')">
-                                    For Basic Plan
+                                    Basic Content
                                 </NavLink>
 
                                 <NavLink v-if="$page.props.auth.currentPlan === 'Premium'" :href="route('personalized.index')" :active="route().current('personalized.index')">
