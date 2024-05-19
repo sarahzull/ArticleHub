@@ -24,12 +24,12 @@ class SubscriptionService
     /**
      * Get the active subscription for a user.
      *
-     * @param int $user_id The ID of the user.
+     * @param int $userId The ID of the user.
      * @return SubscriptionUser|null The active subscription user, or null if not found.
      */
-    public function getActiveSubscriptionUser(int $user_id): ?SubscriptionUser
+    public function getActiveSubscriptionUser(int $userId): ?SubscriptionUser
     {
-      return SubscriptionUser::where('user_id', $user_id)
+      return SubscriptionUser::where('user_id', $userId)
           ->where('status', self::ACTIVE)
           ->with('plan.permission')
           ->first();
@@ -38,12 +38,12 @@ class SubscriptionService
     /**
      * Get the new subscription for a user.
      *
-     * @param int $user_id The ID of the user.
+     * @param int $userId The ID of the user.
      * @return SubscriptionUser|null The new subscription user, or null if not found.
      */
-    public function getNewSubscriptionUser(int $user_id): ?SubscriptionUser
+    public function getNewSubscriptionUser(int $userId): ?SubscriptionUser
     {
-      return SubscriptionUser::where('user_id', $user_id)
+      return SubscriptionUser::where('user_id', $userId)
           ->where('status', self::NEW)
           ->first();
     }
@@ -51,12 +51,12 @@ class SubscriptionService
     /**
      * Get the non-renewing subscription for a user.
      *
-     * @param int $user_id The ID of the user.
+     * @param int $userId The ID of the user.
      * @return SubscriptionUser|null The non-renewing subscription user, or null if not found.
      */
-    public function getNonRenewSubscriptionUser(int $user_id): ?SubscriptionUser
+    public function getNonRenewSubscriptionUser(int $userId): ?SubscriptionUser
     {
-      return SubscriptionUser::where('user_id', $user_id)
+      return SubscriptionUser::where('user_id', $userId)
           ->where('status', self::NON_RENEWAL)
           ->first();
     }

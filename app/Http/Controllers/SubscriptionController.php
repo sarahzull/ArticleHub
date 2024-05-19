@@ -63,10 +63,10 @@ class SubscriptionController extends Controller
 
         if ($request->input('status') == 'done') {
             $status = SubscriptionService::ACTIVE;
-            $invoice_id = $request->input('invoice_id');
+            $invoiceId = $request->input('invoice_id');
 
             $plan = $subscriptionPlanService->getSubscriptionbyId($userSub->subscription_plan_id);
-            $subscriptionUser = $subscriptionService->updateSubscription($userSub, $status, $invoice_id, $plan);
+            $subscriptionUser = $subscriptionService->updateSubscription($userSub, $status, $invoiceId, $plan);
 
             Log::info("update status after callback - ", ['subscriptionUser' => $subscriptionUser]);
 

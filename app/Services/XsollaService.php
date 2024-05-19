@@ -75,29 +75,29 @@ class XsollaService
         return $this->client->getPlans(self::PLANS_LIMIT);
     }
 
-    public function cancelSubscription ($user_id, $subscription_id, $status)
+    public function cancelSubscription ($userId, $subscriptionId, $status)
     {
         /**
          * status: active, canceled, non_renewing
          */
         
         $payload = [
-            "user_id" => (string) $user_id,
+            "user_id" => (string) $userId,
             "status" => $status,
             // "cancel_subscription_payment" => true,
         ];
 
-        $response = $this->client->cancelSubscription($user_id, $subscription_id, $payload);
+        $response = $this->client->cancelSubscription($userId, $subscriptionId, $payload);
         Log::info("updateSubscription", ['response' => $response]);
 
         return $response;
     }
 
-    public function getSubscriptionByUserId($user_id)
+    public function getSubscriptionByUserId($userId)
     {
         $params = [
             'limit' => 1,
-            'user_id' => (string) $user_id,
+            'user_id' => (string) $userId,
             // 'status[]' => 'active',
         ];
 

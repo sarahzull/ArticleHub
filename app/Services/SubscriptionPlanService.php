@@ -11,9 +11,9 @@ use App\Models\SubscriptionPlan;
 class SubscriptionPlanService
 {
     /**
-     * Get subscription plan by plan ID.
+     * Get subscription plan by ID.
      *
-     * @param int $plan_id
+     * @param int $id
      * @return SubscriptionPlan|null
      */
     public function getSubscriptionbyId(int $id): ?SubscriptionPlan
@@ -26,26 +26,26 @@ class SubscriptionPlanService
     /**
      * Get subscription plan by plan ID.
      *
-     * @param int $plan_id
+     * @param int $planId
      * @return SubscriptionPlan|null
      */
-    public function getSubscriptionbyPlanId(string $plan_id): ?SubscriptionPlan
+    public function getSubscriptionbyPlanId(string $planId): ?SubscriptionPlan
     {
         return SubscriptionPlan::with('permission')
-            ->where('plan_id', $plan_id)
+            ->where('plan_id', $planId)
             ->first();
     }
 
     /**
      * Get subscription plan by external ID.
      *
-     * @param string $external_id
+     * @param string $externalId
      * @return SubscriptionPlan|null
      */
-    public function getSubscriptionByExternalId(string $external_id): ?SubscriptionPlan
+    public function getSubscriptionByExternalId(string $externalId): ?SubscriptionPlan
     {
         return SubscriptionPlan::with('permission')
-            ->where('external_id', $external_id)
+            ->where('external_id', $externalId)
             ->first();
     }
 }
