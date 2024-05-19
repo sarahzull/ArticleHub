@@ -25,7 +25,7 @@ class XsollaService
         $this->appUrl = $appUrl;
     }
 
-    public function createUserToken($user, $plan, $items, $userSubId)
+    public function createUserToken($user, $plan, $userSubId, bool $isPlanChanging = false)
     {
         $payload = [
             "purchase" => [
@@ -63,7 +63,7 @@ class XsollaService
             ],
         ];
 
-        if ($items != [] && $items['change_plan'] === true) {
+        if ($isPlanChanging) {
             $payload["purchase"]["subscription"]["operation"] = "change_plan";
         }
 

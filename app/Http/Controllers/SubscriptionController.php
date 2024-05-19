@@ -36,6 +36,7 @@ class SubscriptionController extends Controller
         $user = auth()->user();
         $items = [];
         $userSubscriptionId = null; 
+        $isPlanChanging = false;
 
         $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user->id);
         $plan = $subscriptionPlanService->getSubscriptionbyPlanId($planId);
@@ -43,9 +44,7 @@ class SubscriptionController extends Controller
         Log::info("activeSubscription", ['activeSubscription' => $activeSubscription]);
 
         if ($activeSubscription) {
-            $items = [
-                "change_plan" => true,
-            ];
+            $isPlanChanging = true;
             $user->revokePermissionTo($plan->permission->name);
             $userSubscriptionId = $activeSubscription->id;
         } else {
@@ -53,7 +52,7 @@ class SubscriptionController extends Controller
             $userSubscriptionId = $newSubscription->id;
         }
         
-        $token = $xsollaService->createUserToken($user, $plan, $items, $userSubscriptionId);
+        $token = $xsollaService->createUserToken($user, $plan, $items, $userSubscriptionId, $isPlanChanging);
         $tokenData = $token['token'];
         $redirectUrl = $xsollaService->getRedirectUrl($tokenData);
         
