@@ -30,31 +30,26 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function redirect (RedirectRequest $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
+    public function redirect(RedirectRequest $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
     {
         $planId = $request->input('plan_id');
         $user = auth()->user();
-        $items = [];
-        $userSubscriptionId = null; 
         $isPlanChanging = false;
 
-        $activeSubscription = $subscriptionService->getActiveSubscriptionUser($user->id);
+        $subscription = $subscriptionService->getActiveSubscriptionUser($user->id);
         $plan = $subscriptionPlanService->getSubscriptionbyPlanId($planId);
 
-        Log::info("activeSubscription", ['activeSubscription' => $activeSubscription]);
+        Log::info("subscription", ['subscription' => $subscription]);
 
-        if ($activeSubscription) {
+        if ($subscription) {
             $isPlanChanging = true;
             $user->revokePermissionTo($plan->permission->name);
-            $userSubscriptionId = $activeSubscription->id;
         } else {
-            $newSubscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
-            $userSubscriptionId = $newSubscription->id;
+            $subscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
         }
         
-        $token = $xsollaService->createUserToken($user, $plan, $items, $userSubscriptionId, $isPlanChanging);
-        $tokenData = $token['token'];
-        $redirectUrl = $xsollaService->getRedirectUrl($tokenData);
+        $token = $xsollaService->createUserToken($user, $plan, $subscription->id, $isPlanChanging);
+        $redirectUrl = $xsollaService->getRedirectUrl($token['token']);
         
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
