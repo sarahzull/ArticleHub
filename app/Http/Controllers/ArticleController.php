@@ -4,30 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
-use App\Models\Article;
+use App\Repositories\ArticleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
+    protected $articleRepository;
+
+    public function __construct(ArticleRepository $articleRepository)
+    {
+        $this->articleRepository = $articleRepository;
+    }
+
     public function index()
     {
         $topAuthors = User::select('users.id', 'users.name', DB::raw('COUNT(articles.id) as article_count'))
-        ->leftJoin('articles', 'users.id', '=', 'articles.author_id')
-        ->groupBy('users.id', 'users.name')
-        ->orderByDesc('article_count')
-        ->limit(5)
-        ->get();
+            ->leftJoin('articles', 'users.id', '=', 'articles.author_id')
+            ->groupBy('users.id', 'users.name')
+            ->orderByDesc('article_count')
+            ->limit(5)
+            ->get();
 
-        //get is_premium articles
-        $premiumArticles = Article::with(['author', 'category'])->where('is_premium', 1)
-        ->limit(10)
-        ->get();
-
-        $basicArticles = Article::with(['author', 'category'])
-        ->limit(10)
-        ->where('is_premium', 0)
-        ->get();
+        $premiumArticles = $this->articleRepository->getPremiumArticles();
+        $basicArticles = $this->articleRepository->getBasicArticles();
 
         return Inertia::render('Article/Index', [
             'topAuthors' => $topAuthors,
@@ -35,7 +35,7 @@ class ArticleController extends Controller
             'basicArticles' => $basicArticles
         ]);
     }
-    
+
     public function hotPicks()
     {
         return Inertia::render('Article/HotPicks');
