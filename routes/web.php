@@ -1,13 +1,15 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SubscriptionController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\FileProcessingController;
 
 /*
 |--------------------------------------------------------------------------
