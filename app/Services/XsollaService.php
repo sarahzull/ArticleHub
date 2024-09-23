@@ -31,8 +31,7 @@ class XsollaService
             "purchase" => [
                 "checkout" => ["currency" => "MYR", "amount" => (float) $plan->price],
                 "subscription" => [
-                    "plan_id" => $plan->external_id,
-                    "trial_days" => 7,
+                    "plan_id" => $plan->external_id
                 ],
             ],
             "settings" => [
