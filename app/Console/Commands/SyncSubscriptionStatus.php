@@ -36,7 +36,7 @@ class SyncSubscriptionStatus extends Command
             
             if ($response == []) {
                 $subscription->update([
-                    'status' => 'canceled'
+                    'status' => SubscriptionService::CANCELED,
                 ]);
             } else {
                 $endDate = Carbon::parse($response[0]['date_last_charge'])->addDays(30);

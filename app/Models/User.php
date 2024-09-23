@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Laravel\Sanctum\HasApiTokens;
+use App\Services\SubscriptionService;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,8 +55,8 @@ class User extends Authenticatable
     public function subscription()
     {
         return $this->hasOne(SubscriptionUser::class, 'user_id')->where(function ($query) {
-            $query->where('status', 'active')
-                ->orWhere('status', 'non_renewing');
+            $query->where('status', SubscriptionService::ACTIVE)
+                ->orWhere('status', SubscriptionService::NON_RENEWAL);
         });
     }
 

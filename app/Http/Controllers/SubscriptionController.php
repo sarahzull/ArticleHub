@@ -9,73 +9,70 @@ use Illuminate\Http\Request;
 use App\Services\XsollaService;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionUser;
+use App\Http\Requests\CallbackRequest;
+use App\Http\Requests\RedirectRequest;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\SubscriptionService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
+use App\Services\SubscriptionPlanService;
 
 class SubscriptionController extends Controller
 {
     public function index (XsollaService $xsollaService) 
     {
-        $plans = $xsollaService->getPlans(10);
+        $plans = $xsollaService->getPlans();
 
         return Inertia::render('SubscriptionPlan/Index', [
             'plans' => $plans
         ]);
     }
 
-    public function redirect (Request $request, XsollaService $xsollaService)
+    public function redirect(RedirectRequest $request, XsollaService $xsollaService, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
     {
-        $plan_id = $request->input('plan_id');
-        $user_id = auth()->user()->id;
-        $items = [];
+        $planId = $request->input('plan_id');
+        $user = auth()->user();
+        $isPlanChanging = false;
 
-        $userSub = SubscriptionUser::where('user_id', auth()->user()->id)->where('status', 'active')->first();
+        $subscription = $subscriptionService->getActiveSubscriptionUser($user->id);
+        $plan = $subscriptionPlanService->getSubscriptionbyPlanId($planId);
 
-        if ($userSub) {
-            $items = [
-                "change_plan" => true,
-            ];
+        Log::info("subscription", ['subscription' => $subscription]);
+
+        if ($subscription) {
+            $isPlanChanging = true;
+            $user->revokePermissionTo($plan->permission->name);
+        } else {
+            $subscription = $subscriptionService->createSubscription($user, $plan, SubscriptionService::NEW);
         }
-
-        $user = User::find($user_id);
-        $plan = SubscriptionPlan::with('permission')->where('plan_id', $plan_id)->first();
-
-        $user->revokePermissionTo($plan->permission->name);
-        SubscriptionUser::where('user_id', $user_id)->update(['status' => 'canceled']);
         
-        $token = $xsollaService->createUserToken($user, $plan, $items);
-
-        SubscriptionUser::create([
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'start_date' => now(),
-            'end_date' => now()->addDays(30),
-            'status' => 'new',
-        ]);
-
-        $redirectUrl = "https://sandbox-secure.xsolla.com/paystation4/?token=".$token['token'];
+        $token = $xsollaService->createUserToken($user, $plan, $subscription->id, $isPlanChanging);
+        $redirectUrl = $xsollaService->getRedirectUrl($token['token']);
         
         return Redirect::route('redirect', ['redirectUrl' => $redirectUrl]);
     }
 
-    public function callback (Request $request)
-    {   
-        $subs = SubscriptionUser::where('user_id', $request->input('user_id'))
-                                ->where('status', 'new')
-                                ->first();
-        $user = User::find($request->input('user_id'));
-        $plan = SubscriptionPlan::with('permission')->where('id', $subs->plan->id)->first();
+    public function callback(CallbackRequest $request, SubscriptionService $subscriptionService, SubscriptionPlanService $subscriptionPlanService)
+    {
+        $userSub = $subscriptionService->getSubscriptionUserById($request->input('user_sub_id'));
+
+        Log::info("callback received", $request->all());
+        Log::info("userSub", ['userSub' => $userSub]);
 
         if ($request->input('status') == 'done') {
-            $subs->update([
-                'status' => 'active',
-                'invoice_id' => $request->input('invoice_id'),
-            ]);
-            $user->givePermissionTo($plan->permission->name);
+            $status = SubscriptionService::ACTIVE;
+            $invoiceId = $request->input('invoice_id');
+
+            $plan = $subscriptionPlanService->getSubscriptionbyId($userSub->subscription_plan_id);
+            $subscriptionUser = $subscriptionService->updateSubscription($userSub, $status, $invoiceId, $plan);
+
+            Log::info("update status after callback - ", ['subscriptionUser' => $subscriptionUser]);
+
+            return redirect()->route('dashboard', ['status' => $userSub->status])->with('success', 'Subscription has been activated!');
         }
 
-        return redirect()->route('dashboard', ['status' => $subs->status]);
+        return redirect()->route('dashboard', ['status' => $userSub->status]);
     }
 }

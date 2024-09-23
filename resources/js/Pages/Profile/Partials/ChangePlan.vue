@@ -46,7 +46,7 @@ const submit = async () => {
 const changePlan = async () => {
     const selectedPlan = props.plans.find(plan => plan.id === parseInt(form.plan));
     if (selectedPlan) {
-        const redirectUrl = `/plans/redirect?external_id=${selectedPlan.external_id}&plan_id=${selectedPlan.id}`;
+        const redirectUrl = `/plans/redirect?status=change_plan&external_id=${selectedPlan.external_id}&plan_id=${selectedPlan.id}`;
         window.location.href = redirectUrl;
     } else {
         console.error('No plan selected');

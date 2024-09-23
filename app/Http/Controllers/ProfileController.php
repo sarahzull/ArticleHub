@@ -2,33 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use App\Services\XsollaService;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Services\XsollaService;
+use App\Models\SubscriptionUser;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Services\SubscriptionService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, XsollaService $xsollaService): Response
     {
         $user = auth()->user()->load('subscription.plan');
+        $userPlan = null;
         
         if ($user->subscription) {
             $userPlan = $user->subscription;
-        } else {
-            $userPlan = null;
         }
 
-        $plans = XsollaService::getPlans(null);
+        $plans = $xsollaService->getPlans(10);
 
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
@@ -80,15 +81,41 @@ class ProfileController extends Controller
         //
     }
 
-    public function cancelPlan (Request $request) 
+    public function cancelPlan (Request $request, XsollaService $xsollaService, SubscriptionService $subscriptionService) 
+    {
+        $user = auth()->user();
+        $activeSubscription = $subscriptionService->getNonRenewSubscriptionUser($user->id);
+
+        $response = $xsollaService->cancelSubscription($user->id, (int) $activeSubscription->subscription_id, SubscriptionService::CANCELED);
+
+        if ($response['status'] === SubscriptionService::ACTIVE || $response['status'] === SubscriptionService::NON_RENEWAL) {
+            $activeSubscription->update([
+                'status' => $response['status'],
+                'end_date' => now(),
+            ]);
+            
+            return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
+        } else {
+            return Redirect::route('profile.edit')->with('error', 'Request failed.');
+        }
+    }
+
+    public function nonRenewPlan (Request $request, XsollaService $xsollaService) 
     {
         $user_id = auth()->user()->id;
-        $subscription = XsollaService::getSubscriptionByUserId($user_id);
-        $subscription_id = $subscription[0]['id'];
+        $activeSubscription = SubscriptionUser::where('user_id', $user_id)
+        ->where('status', SubscriptionService::ACTIVE)
+        ->first();
 
-        $response = XsollaService::cancelSubscription($user_id, $subscription_id, 'non_renewing');
+        $response = $xsollaService->cancelSubscription($user_id, (int) $activeSubscription->subscription_id, SubscriptionService::NON_RENEWAL);
+        Log::info("nonRenewPlan", ['response' => $response]);
 
-        if ($response['status'] === 'canceled' || $response['status'] === 'non_renewing') {
+        if ($response['status'] === SubscriptionService::CANCELED || $response['status'] === SubscriptionService::NON_RENEWAL) {
+            $activeSubscription->update([
+                'status' => $response['status'],
+                'end_date' => now(),
+            ]);
+            
             return Redirect::route('profile.edit')->with('success', 'Subscription has been canceled.');
         } else {
             return Redirect::route('profile.edit')->with('error', 'Request failed.');

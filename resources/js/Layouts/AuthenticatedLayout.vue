@@ -45,20 +45,35 @@ const canAccessPro = usePage().props.can?.pro;
                                 </NavLink>
 
                                 <NavLink v-if="$page.props.auth.currentPlan === 'Basic'" :href="route('personalized.index')" :active="route().current('personalized.index')">
-                                    For Basic Plan
+                                    Basic Content
                                 </NavLink>
 
                                 <NavLink v-if="$page.props.auth.currentPlan === 'Premium'" :href="route('personalized.index')" :active="route().current('personalized.index')">
-                                    For Premium Plan
+                                    Exclusive Content
                                 </NavLink>
                                 
                                 <NavLink v-if="$page.props.auth.currentPlan === 'Pro'" :href="route('personalized.index')" :active="route().current('personalized.index')">
-                                    For Pro Plan
+                                    Exclusive Content
                                 </NavLink>
                             </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
+                            <!-- Write Article -->
+                            <!-- <div class="flex items-center ms-4">
+                                <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Premium'">
+                                    <Link :href="route('profile.edit')" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md ">
+                                        <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+                                    </Link>
+                                </div>
+                                
+                                <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Pro'">
+                                    <Link :href="route('profile.edit')" class="px-2 py-1 text-sm font-semibold leading-tight rounded-md bg-sky-300 text-sky-700">
+                                        Write Now
+                                    </Link>
+                                </div>
+                            </div> -->
+                            
                             <!-- Current Plan -->
                             <div class="flex items-center ms-4">
                                 <div class="flex items-center ms-4" v-if="$page.props.auth.currentPlan === 'Basic'">

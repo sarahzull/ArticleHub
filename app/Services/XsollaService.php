@@ -16,6 +16,8 @@ class XsollaService
     private ?int $projectId = null;
     private ?string $appUrl = null;
 
+    const PLANS_LIMIT = 10;
+
     public function __construct(XsollaClient $client, int $projectId, string $appUrl)
     {
         $this->client = $client;
@@ -23,7 +25,7 @@ class XsollaService
         $this->appUrl = $appUrl;
     }
 
-    public function createUserToken($user, $plan, $items)
+    public function createUserToken($user, $plan, $userSubId, bool $isPlanChanging = false)
     {
         $payload = [
             "purchase" => [
@@ -48,7 +50,7 @@ class XsollaService
                     ],
                     "size" => "medium",
                 ],
-                "return_url" => "$this->appUrl/api/v1/subscription/callback",
+                "return_url" => "$this->appUrl/api/v1/subscription/callback?user_sub_id=$userSubId",
                 "redirect_policy" => [
                     "redirect_button_caption" => "Back to Site",
                 ],
@@ -61,59 +63,49 @@ class XsollaService
             ],
         ];
 
-        if ($items != [] && $items['change_plan'] === true) {
+        if ($isPlanChanging) {
             $payload["purchase"]["subscription"]["operation"] = "change_plan";
         }
 
         return $this->client->createToken($payload)->json();
     }
 
-    public function getPlans ($limit) 
+    public function getPlans () 
     {
-        return $this->client->getPlans($limit);
+        return $this->client->getPlans(self::PLANS_LIMIT);
     }
 
-    public function cancelSubscription ($user_id, $subscription_id, $status)
+    public function cancelSubscription ($userId, $subscriptionId, $status)
     {
         /**
          * status: active, canceled, non_renewing
          */
         
         $payload = [
-            "user_id" => (string) $user_id,
+            "user_id" => (string) $userId,
             "status" => $status,
             // "cancel_subscription_payment" => true,
         ];
 
-        $response = $this->client->cancelSubscription($user_id, $subscription_id, $payload);
-
-        $subscription = SubscriptionPlan::with('permission')->where('plan_id', $response['plan']['id'])->first();
-        
-        if ($status === 'canceled') {
-            $user = User::find($user_id);
-            $user->revokePermissionTo($subscription->permission->name);
-        }
-
-        $user = SubscriptionUser::where('user_id', $user_id)
-            ->where('subscription_plan_id', $subscription->id)
-            ->where('status', 'active')
-            ->update([
-            'status' => $response['status'],
-            'end_date' => Carbon::parse($response['date_end']),
-            'updated_at' => now(),
-        ]);
+        $response = $this->client->cancelSubscription($userId, $subscriptionId, $payload);
+        Log::info("updateSubscription", ['response' => $response]);
 
         return $response;
     }
 
-    public function getSubscriptionByUserId($user_id)
+    public function getSubscriptionByUserId($userId)
     {
         $params = [
             'limit' => 1,
-            'user_id' => (string) $user_id,
+            'user_id' => (string) $userId,
             // 'status[]' => 'active',
         ];
 
         return $this->client->getSubscriptionByUserId($params);
+    }
+
+    public function getRedirectUrl ($token)
+    {
+        return $this->client->getRedirectUrl($token);
     }
 }

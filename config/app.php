@@ -171,6 +171,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\XsollaClientProvider::class,
         App\Providers\XsollaServiceProvider::class,
+        App\Providers\WebhookServiceProvider::class,
     ])->toArray(),
 
     /*

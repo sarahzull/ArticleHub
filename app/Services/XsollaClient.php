@@ -16,13 +16,15 @@ class XsollaClient
   private int $projectId;
   private string $apiMerchantKey;
   private string $apiBaseUrl;
+  private string $ps4BaseUrl;
 
-  public function __construct(int $merchantId, int $projectId, string $apiMerchantKey, string $apiBaseUrl)
+  public function __construct(int $merchantId, int $projectId, string $apiMerchantKey, string $apiBaseUrl, string $ps4BaseUrl)
   {
     $this->merchantId = $merchantId;
     $this->projectId = $projectId;
     $this->apiMerchantKey = $apiMerchantKey;
     $this->apiBaseUrl = $apiBaseUrl;
+    $this->ps4BaseUrl = $ps4BaseUrl;
   }
   
   public function createToken(array $payload): \Illuminate\Http\Client\Response
@@ -34,12 +36,12 @@ class XsollaClient
                         ->post($apiUrl, $payload);
   }
 
-  public function getPlans(int $limit): array
+  public function getPlans($limit): array
   {
     $apiUrl = $this->apiBaseUrl . "projects/" . $this->projectId . "/subscriptions/plans";
 
     $params = [
-      'limit' => $limit ?? 10
+      'limit' => $limit
     ];
 
     return Http::withBasicAuth($this->merchantId, $this->apiMerchantKey)
@@ -64,6 +66,11 @@ class XsollaClient
     return Http::withBasicAuth($this->merchantId, $this->apiMerchantKey)
                 ->get($apiUrl, $params)
                 ->json();
+  }
+
+  public function getRedirectUrl(string $token): string
+  {
+    return $this->ps4BaseUrl . "?token=" . $token;
   }
 
 }

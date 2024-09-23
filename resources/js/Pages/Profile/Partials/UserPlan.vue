@@ -88,6 +88,66 @@ const cancelPlan = async () => {
     }
   });
 };
+
+const submitStopRenewal = async () => {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to stop renew the plan?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, stop renew the plan'
+    });
+
+    if (result.isConfirmed) {
+        await nonRenewPlan();
+    }
+};
+
+const nonRenewPlan = async () => {
+    try {
+        const response = await form.post(route('profile.nonRenewPlan'));
+        const data = response.data;
+
+        Swal.fire({
+            title: "Success!",
+            text: data.success || "Subscription will not be renewed.",
+            icon: "success"
+        });
+      
+        // location.reload();
+    } catch (error) {
+        Swal.fire({
+            title: "Error",
+            text: error.response.data.error || "An error occurred. Please try again.",
+            icon: "error"
+        });
+    }
+};
+
+
+// const nonRenewPlan = async () => {
+//   form.post(route('profile.nonRenewPlan'), {
+//     onSuccess: (data) => {
+//         Swal.fire({
+//             title: "Success!",
+//             text: data.success || "Subscription will not be renewed.",
+//             icon: "success"
+//         })
+//         // .then(() => {
+//         //     location.reload();
+//         // });
+//     },
+//     onError: (error) => {
+//         Swal.fire({
+//             title: "Error",
+//             text: error.response.data.error || "An error occurred. Please try again.",
+//             icon: "error"
+//         });
+//     }
+//   });
+// };
 </script>
 
 <template>
@@ -151,7 +211,7 @@ const cancelPlan = async () => {
                   <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
               </Transition> -->
 
-            <form @submit.prevent="submitCancel" v-if="userPlan.status != 'non_renewing'">
+            <form @submit.prevent="submitCancel" v-if="userPlan.status == 'non_renewing'">
               <input type="hidden" name="user_id" :value="user.id" />
               <button 
                   type="submit"
@@ -159,6 +219,17 @@ const cancelPlan = async () => {
                   v-if="!showSubscriptionForm"
               >
                   Cancel Subscription
+              </button>
+            </form>
+
+            <form @submit.prevent="submitStopRenewal" v-if="userPlan.status == 'active'">
+              <input type="hidden" name="user_id" :value="user.id" />
+              <button 
+                  type="submit"
+                  class="inline-flex items-center py-2 text-xs font-semibold uppercase text-slate-500"
+                  v-if="!showSubscriptionForm"
+              >
+                  Stop Renewing
               </button>
             </form>
           </div>

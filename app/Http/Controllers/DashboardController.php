@@ -11,29 +11,26 @@ class DashboardController extends Controller
 {
     public function index (Request $request) 
     {
-        $articles = Article::with('author', 'category')
-            ->latest()
-            ->limit(10)
-            ->get();
-
         $user = auth()->user();
+        $articles = [];
 
-        if ($user) {
-            if ($user->subscription) {
-                $userWithSubscription = $user->load('subscription.plan');
-                $currentPlan = optional($userWithSubscription->subscription->plan)->name ?? 'Free';
-            } else {
-                $currentPlan = 'Free';
-            }
-        } else {
+        if ($user && $user->subscription === null) {
             $currentPlan = 'Free';
+        } else {
+            $currentPlan = $user->subscription->plan->name;
         }
 
-        if ($request->filled('status') && $request->status == 'active') {
-            session()->flash('success', 'Your subscription has been activated!');
-        }
+        $query = Article::with('author', 'category')->latest();
 
-        session()->forget('success');
+        if ($currentPlan === 'Basic') {
+            $query->where('is_featured', true);
+        } elseif ($currentPlan === 'Premium' || $currentPlan === 'Pro') {
+            $articles = $query->limit(20)->get();
+        }
+    
+        if ($currentPlan === 'Basic') {
+            $articles = $query->limit(10)->get();
+        }
 
         return Inertia::render('Dashboard', [
             'articles' => $articles,

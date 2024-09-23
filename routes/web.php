@@ -1,12 +1,15 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SubscriptionController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\FileProcessingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,8 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('profile/plan', [ProfileController::class, 'updatePlan'])->name('profile.updatePlan');
     Route::post('profile/cancelPlan', [ProfileController::class, 'cancelPlan'])->name('profile.cancelPlan');
+    Route::post('profile/nonRenewPlan', [ProfileController::class, 'nonRenewPlan'])->name('profile.nonRenewPlan');
 
-    Route::get('/personalized', [PlanController::class, 'index'])->name('personalized.index');
+    Route::get('/personalized', [ArticleController::class, 'index'])->name('personalized.index');
 });
 
 Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans.index');
@@ -51,5 +55,7 @@ Route::get('/plans/redirect', [SubscriptionController::class, 'redirect'])->name
 Route::get('/articles', function () {
     return Inertia::render('Articles/Index');
 })->name('articles.index');
+
+Route::webhooks('xsolla/webhook');
 
 require __DIR__.'/auth.php';

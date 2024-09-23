@@ -36,9 +36,9 @@ const canAccessPro = usePage().props.can.pro;
     <Head title="" />
 
     <AuthenticatedLayout>
-        <!-- <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Dashboard</h2>
-        </template> -->
+        <template #header>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">Exclusive Content</h2>
+        </template>
 
         <div v-if="$page.props.auth.currentPlan === 'Basic'" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
